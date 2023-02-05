@@ -1,0 +1,370 @@
+:root{
+    --background-color: rgb(0,192,229);
+    --header-color: rgb(0, 103, 158);
+    --present-day-color: rgb(0, 132, 158);
+    --light-blue: rgb(189, 235, 247);
+    --font-color-white: white;
+    --selected-city-color: rgb(246, 246, 199);
+    --weekend-color: red;
+    --weekdays-color: rgb(0, 90, 0);
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+}
+
+body{
+    background-color: var(--background-color);
+    color: var(--font-color-white);
+}
+
+img{
+    width: 28px;
+    height: 28px;
+}
+
+.weather-input{
+    background-color:var(--light-blue);
+    width: 20%;
+    min-width: 12rem;
+    margin: 1rem 0 1rem 1rem;
+    padding: 0.5rem;
+    position: relative;
+    border-radius: 0.25rem;
+}
+
+.weather-input input{
+    border: 1px solid grey;
+    height: 34px;
+    width: 100%;
+    padding: 5px;
+    border-radius: 0.25rem;
+}
+
+.weather-input button{
+    background-color: var(--present-day-color);
+    border: none;
+    border-radius: 0 0.2rem 0.2rem 0;
+    height: 32px; 
+    width: 32px;
+    position: absolute;
+    transform: translate(-33px, 1px);
+    cursor: pointer;
+}
+
+.weather-input button img{
+    margin-top: 2px;
+}
+
+.content{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+h1{
+    font-size: 2rem;
+    background-color: var(--header-color);
+    line-height: 3.5rem;
+    text-align: center;
+}
+
+.weather-data{
+    width: 80%;
+    min-width: 25rem;
+    margin: 1rem 1rem 0 1rem;
+}
+
+#favourite-city-container{
+    margin-top: 1rem;
+    border: 1px solid grey;
+    border-radius: 0.25rem;
+    border-bottom:  none;
+    display: flex;
+    flex-direction: column;
+}
+
+.favourite-city{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid grey;
+    height: 2.5rem;
+    color: black;
+    padding-left: 0.5rem;
+    cursor: pointer;
+}
+
+.favourite-city .location-tag{
+    margin-right: 1rem;
+}
+
+.favourite-city .arrow{
+  margin-left: 1rem;
+}
+
+.selected-city{
+    background-color: var(--selected-city-color);
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.last-city{
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+
+.weather-data{
+    display: flex;
+    flex-direction: column;
+}
+
+#present-day{
+    background-color:var(--present-day-color);
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
+
+#present-day h2{
+    font-size: 2rem;
+    line-height: 3rem;
+    margin-bottom: 1rem;
+}
+
+#present-day img{
+    margin-right: 1rem;
+}
+
+#future-days{
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.today{
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 2rem;
+    padding-left: 2.5rem;
+}
+
+.current-condition{
+    justify-content: space-between;
+}
+
+.current-data{
+    max-width: 60%;
+}
+
+.current-temp{
+    font-size: 8rem;
+    font-weight: bold;
+    padding: 1rem;
+}
+
+.current-temp img{
+    height: 4rem;
+    width: 4rem;
+}
+
+.current-condition .current-weather-image{
+    height: 10rem;
+    width: 10rem;
+}
+
+.feels-like{
+    padding-left: 2.5rem;
+    font-size: 3rem;
+}
+
+.feels-like img{
+    height: 3rem;
+    width: 3rem;
+}
+
+.flex-justify-middle{
+    display: flex;
+    align-items: center;
+}
+
+.flex-row-justify-middle{
+    display: flex;
+    align-items: center;
+}
+
+.flex-column-justify-middle{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.current-weather-description{
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.current-other-info{
+    width: 8rem;
+}
+
+.line-height-2rem{
+    line-height: 2rem;
+    font-size: 1.25rem;
+}
+
+.future-day{
+    width: 12rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+.future-day img{
+    margin-right: 0.5rem;
+}
+
+.day-date{
+    line-height: 2rem;
+    font-size: 1.25rem;
+}
+
+.day-value{
+    background-color:var(--weekdays-color);
+    border-radius: 0.25rem 0.25rem 0 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.day-data{
+    background-color: var(--header-color);
+    border-radius: 0 0 0.25rem 0.25rem;
+    padding: 0 1rem;
+}
+
+.weekend{
+    background-color: var(--weekend-color);
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+
+.future-main-summary{
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.future-weather-image{
+    height: 6rem;
+    width: 6rem;
+}
+
+.future-weather-description{
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 1200px) {
+    .current-temp{
+        line-height: 8rem;
+        font-size: 6rem;
+    }
+
+    .current-temp img{
+        height: 3rem;
+        width: 3rem;
+    }
+    
+    .future-day{
+        width: fit-content;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .current-temp{
+        line-height: 6rem;
+        font-size: 4rem;
+    }
+
+    .feels-like{
+        padding-left: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .current-temp{
+        line-height: 4rem;
+        font-size: 3rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    .content{
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .weather-input{
+        height: fit-content;
+        width: 100%;
+        margin: 0;
+    }
+
+    .weather-data{
+        display: block;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        margin: 1rem 0 0 0;
+    }
+
+    .today{
+        padding-left: 0;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+
+    #present-day h2{
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+
+    .current-data{
+        max-width: 100%;
+    }
+
+    .current-temp{
+        line-height: 8rem;
+        font-size: 6rem;
+    }
+
+    .current-temp img{
+        height: 3rem;
+        width: 3rem;
+    }
+
+    #weather-description{
+        margin-bottom: 1rem;
+    }
+
+    .flex-justify-middle{
+        flex-direction: column;
+        
+    }
+
+    .flex-row-justify-middle{
+        justify-content: center;
+    }
+
+    #future-days{
+        flex-direction: column;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .future-day{
+        width: 15rem;
+    }
+}
+
+
