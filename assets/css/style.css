@@ -155,14 +155,14 @@ h1{
 }
 
 .current-temp{
-    font-size: 8rem;
+    font-size: 6rem;
     font-weight: bold;
     padding: 1rem;
 }
 
 .current-temp img{
-    height: 4rem;
-    width: 4rem;
+    height: 3rem;
+    width: 3rem;
 }
 
 .current-condition .current-weather-image{
