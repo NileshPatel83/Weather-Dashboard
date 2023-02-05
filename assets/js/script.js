@@ -3,7 +3,10 @@ const storageKey = 'weather-dashboard';
 const defaultCityName = 'Sydney';
 const reqWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast';
 const reqCityDataURL = 'http://api.openweathermap.org/geo/1.0/direct?q=';
+const reqCityNameURL = 'http://api.openweathermap.org/geo/1.0/reverse?';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
+
+const cityNameID = 'city-name';
     
 const options = {
     enableHighAccuracy: true,
@@ -14,12 +17,34 @@ const options = {
 
 init();
 
-function init(){
+async function init(){
 
     let cityLocation= getCurrentLocationData();
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return
 
-    console.log(cityLocation);
+    let cityName = await getCityName(cityLocation);
+    console.log(cityName);
+
+    // updateCityName();
+
+    // let cityNameEl = document.getElementById(cityNameID);
+
+}
+
+async function getCityName(cityLocation){
+
+    let cityData = await getCityNameFromAPI(cityLocation);
+
+    return cityData[0].name;
+}
+
+async function getCityNameFromAPI(cityLocation){
+
+    let url = `${reqCityNameURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&limit=1&appid=${apiKey}`;
+
+    const response = await fetch(url);
+
+    return response.json();
 }
 
 function getCurrentLocationData(){
