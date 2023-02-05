@@ -4,11 +4,6 @@ const defaultCityName = 'Sydney';
 const reqWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast';
 const reqCityDataURL = 'http://api.openweathermap.org/geo/1.0/direct?q=';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
-
-// let cityLocation = {
-//     lat: 0,
-//     lon: 0
-// };
     
 const options = {
     enableHighAccuracy: true,
@@ -23,13 +18,29 @@ function init(){
 
     let cityLocation= getCurrentLocationData();
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return
+
+    console.log(cityLocation);
 }
 
 function getCurrentLocationData(){
 
+    let cityLocation = {
+        lat: 0,
+        lon: 0
+    };
+
     navigator.geolocation.getCurrentPosition(success, error, options);
 
+    let storage = getLocalStorage();
+    if(storage !== null){
 
+        cityLocation = {
+            lat: storage.curLocation.lat,
+            lon: storage.curLocation.lon
+        };
+    }
+
+    return cityLocation;
 }
 
 async function success(pos) {
@@ -43,7 +54,7 @@ async function success(pos) {
 
     if(crd.latitude === 0 && crd.longitude === 0){
 
-        cityLocation = await getDefaultCityLocation();
+        cityLocation = getDefaultCityLocation();
 
     } else {
 
@@ -76,7 +87,7 @@ async function getDefaultCityLocation(){
         cityLocation.lon = defaultCityLocation[0].lon
     }
 
-    return location;
+    return cityLocation;
 }
 
 async function getLocationDataByCityName(cityName){
@@ -91,6 +102,18 @@ async function getLocationDataByCityName(cityName){
 //Adds/updates local storage.
 function addUpdateLocalStorage(storage){
     localStorage.setItem(storageKey, JSON.stringify(storage));
+}
+
+//Gets the local storage for trivia games.
+function getLocalStorage(){
+
+    //Gets the schedule storage and converts it into an array of objects.
+    let storage = localStorage.getItem(storageKey);   
+    if(storage === null){
+        return null;
+    }
+
+    return JSON.parse(storage);
 }
   
 function error(err) {
