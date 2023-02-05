@@ -18,25 +18,35 @@
                 </form>
 
                 <div id="favourite-city-container">
-                    <div class="favourite-city selected-city"><img class="location-tag" src="/assets/images/Location-Current.png" alt="">Brisbane<img class="arrow" src="/assets/images/Arrow.png" alt=""></div>
-                    <div class="favourite-city"><img class="location-tag" src="/assets/images/Location.png" alt="">Adelaide</div>
-                    <div class="favourite-city last-city"><img class="location-tag" src="/assets/images/Location.png" alt="">Sydney</div>
+                    <div class="favourite-city flex-row-justify-middle"><img class="location-tag" src="/assets/images/Location.png" alt="">Adelaide</div>
+                    <div class="favourite-city selected-city flex-row-justify-middle"><img class="location-tag" src="/assets/images/Location-Current.png" alt="">Brisbane<img class="arrow" src="/assets/images/Arrow.png" alt=""></div>
+                    <div class="favourite-city last-city flex-row-justify-middle"><img class="location-tag" src="/assets/images/Location.png" alt="">Sydney</div>
                 </div>
             </div>
 
             <div class="weather-data">
                 <div id="present-day">
-                    <h2>Current Location (Logan City)</h2>
-                    <div>Friday- 03/02/2022</div>
-                    <div><img src="/assets/images/Temperature.png" alt="">25.5 C</div>
-                    <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
-                    <div><img src="/assets/images/High-Temperature.png" alt="">24 C</div>
-                    <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25 C</div>
-                    <div><img src="/assets/images/FeelsLike.png" alt=""><span>26 C</span></div>
-                    <div><img src="/assets/images/Wind.png" alt=""><span>24 KMH</span></div>
-                    <div><img src="/assets/images/Humidity.png" alt=""><span>63%</span></div>               
-                    <div><img src="/assets/images/Sunrise.png" alt=""><span>5am</span></div>
-                    <div><img src="/assets/images/Sunset.png" alt=""><span>6pm</span></div>
+                    <h2 class="flex-row-justify-middle"><img class="location-tag" src="/assets/images/Location.png" alt="">Current Location (Logan City)</h2>
+                    <div class="today">Friday- 03/02/2022</div>
+                    <div class="current-condition flex-justify-middle">    
+                        <div class="current-data">
+                            <div class="current-temp"><img src="/assets/images/Temperature.png" alt="">25.5&#176C</div>
+                            <div class="feels-like flex-row-justify-middle"><img src="/assets/images/FeelsLike.png" alt=""><span>26&#176C</span></div>
+                        </div>   
+                        <div class="flex-column-justify-middle">
+                            <img class="current-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
+                            <div id="weather-description">Light Rain</div>
+                        </div>
+                        <div class="current-other-info">
+                            <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="">24&#176C</div>
+                            <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Low-Temperature - Copy.png" alt="">25&#176C</div>
+                            <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Wind.png" alt=""><span>24 KMH</span></div>
+                            <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Humidity.png" alt=""><span>63%</span></div>               
+                            <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Sunrise.png" alt=""><span>5am</span></div>
+                            <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Sunset.png" alt=""><span>6pm</span></div>
+                        </div>
+                    </div>
+                    
                 </div>
 
                 <div id="future-days">
@@ -44,8 +54,8 @@
                         <div>Suturday</div>
                         <div>04/02/2022</div>
                         <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
-                        <div><img src="/assets/images/High-Temperature.png" alt="">25.5 C</div>
-                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25 C</div>
+                        <div><img src="/assets/images/High-Temperature.png" alt="">25.5&#176C</div>
+                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25&#176C</div>
                         <div><img src="/assets/images/Wind.png" alt=""><span>24 KMH</span></div>
                         <div><img src="/assets/images/Humidity.png" alt=""><span>63%</span></div>   
                         <div><img src="/assets/images/Sunrise.png" alt=""><span>5am</span></div>
@@ -56,8 +66,8 @@
                         <div>Sunday</div>
                         <div>05/02/2022</div>
                         <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
-                        <div><img src="/assets/images/High-Temperature.png" alt="">26 C</div>
-                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25 C</div>
+                        <div><img src="/assets/images/High-Temperature.png" alt="">26&#176C</div>
+                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25&#176C</div>
                         <div><img src="/assets/images/Wind.png" alt=""><span>24 KMH</span></div>
                         <div><img src="/assets/images/Humidity.png" alt=""><span>63%</span></div>   
                         <div><img src="/assets/images/Sunrise.png" alt=""><span>5am</span></div>
@@ -68,8 +78,8 @@
                         <div>Monday</div>
                         <div>06/02/2022</div>
                         <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
-                        <div><img src="/assets/images/High-Temperature.png" alt="">25 C</div>
-                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25 C</div>
+                        <div><img src="/assets/images/High-Temperature.png" alt="">25&#176C</div>
+                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25&#176C</div>
                         <div><img src="/assets/images/Wind.png" alt=""><span>24 KMH</span></div>
                         <div><img src="/assets/images/Humidity.png" alt=""><span>63%</span></div>   
                         <div><img src="/assets/images/Sunrise.png" alt=""><span>5am</span></div>
@@ -80,8 +90,8 @@
                         <div>Tuesday</div>
                         <div>07/02/2022</div>
                         <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="">
-                        <div><img src="/assets/images/High-Temperature.png" alt="">24 C</div>
-                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25 C</div>
+                        <div><img src="/assets/images/High-Temperature.png" alt="">24&#176C</div>
+                        <div><img src="/assets/images/Low-Temperature - Copy.png" alt="">25&#176C</div>
                         <div><img src="/assets/images/Wind.png" alt=""><span>24 KMH</span></div>
                         <div><img src="/assets/images/Humidity.png" alt=""><span>63%</span></div>   
                         <div><img src="/assets/images/Sunrise.png" alt=""><span>5am</span></div>

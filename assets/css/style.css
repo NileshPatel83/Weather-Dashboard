@@ -1,6 +1,7 @@
 :root{
     --background-color: rgb(0,192,229);
     --header-color: rgb(0, 132, 158);
+    --light-blue: rgb(189, 235, 247);
     --font-color-white: white;
 }
 
@@ -21,12 +22,14 @@ img{
 }
 
 .weather-input{
-    background-color: rgb(189, 235, 247);
+    background-color:var(--light-blue);
     width: 20%;
+    height: 100vh;
     min-width: 12rem;
     margin: 1rem 0 1rem 1rem;
     padding: 0.5rem;
     position: relative;
+    border-radius: 0.25rem;
 }
 
 .weather-input input{
@@ -66,6 +69,7 @@ h1{
 
 .weather-data{
     width: 80%;
+    min-width: 25rem;
     margin: 1rem 1rem 0 1rem;
 }
 
@@ -74,17 +78,16 @@ h1{
     border: 1px solid grey;
     border-radius: 0.25rem;
     border-bottom:  none;
+    display: flex;
+    flex-direction: column;
 }
 
 .favourite-city{
     border-bottom: 1px solid grey;
     height: 2.5rem;
     color: black;
-    display: flex;
-    align-items: center;
     padding-left: 0.5rem;
     cursor: pointer;
-    
 }
 
 .favourite-city .location-tag{
@@ -103,4 +106,103 @@ h1{
 .last-city{
     border-radius: 0 0 0.25rem 0.25rem;
 }
+
+.weather-data{
+    display: flex;
+    flex-direction: column;
+}
+
+#present-day{
+    background-color:var(--header-color);
+    border-radius: 0.25rem;
+    padding: 1rem;
+}
+
+#present-day h2{
+    font-size: 1.5rem;
+    line-height: 3rem;
+    margin-bottom: 1rem;
+}
+
+#present-day img{
+    margin-right: 1rem;
+}
+
+#future-days{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.today{
+    font-size: 1.25rem;
+    line-height: 2rem;
+    padding-left: 2.5rem;
+}
+
+.current-condition{
+    justify-content: space-between;
+}
+
+.current-temp{
+    line-height: 15rem;
+    font-size: 12rem;
+    font-weight: bold;
+}
+
+.current-temp img{
+    height: 6rem;
+    width: 6rem;
+}
+
+.current-condition .current-weather-image{
+    height: 10rem;
+    width: 10rem;
+}
+
+.feels-like{
+    padding-left: 2.5rem;
+}
+
+.feels-like img{
+    height: 3rem;
+    width: 3rem;
+}
+
+.feels-like span{
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.flex-justify-middle{
+    display: flex;
+    align-items: center;
+}
+
+.flex-row-justify-middle{
+    display: flex;
+    align-items: center;
+}
+
+.flex-column-justify-middle{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#weather-description{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.current-other-info{
+    width: 8rem;
+}
+
+.line-height-2rem{
+    line-height: 2rem;
+    font-size: 1.25rem;
+}
+
 
