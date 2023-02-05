@@ -83,6 +83,8 @@ h1{
 }
 
 .favourite-city{
+    display: flex;
+    align-items: center;
     border-bottom: 1px solid grey;
     height: 2.5rem;
     color: black;
@@ -115,7 +117,7 @@ h1{
 #present-day{
     background-color:var(--header-color);
     border-radius: 0.25rem;
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
 #present-day h2{
@@ -144,15 +146,20 @@ h1{
     justify-content: space-between;
 }
 
+.current-data{
+    max-width: 60%;
+}
+
 .current-temp{
-    line-height: 15rem;
-    font-size: 12rem;
+    line-height: 10rem;
+    font-size: 8rem;
     font-weight: bold;
+    padding: 1rem;
 }
 
 .current-temp img{
-    height: 6rem;
-    width: 6rem;
+    height: 4rem;
+    width: 4rem;
 }
 
 .current-condition .current-weather-image{
@@ -201,8 +208,102 @@ h1{
 }
 
 .line-height-2rem{
-    line-height: 2rem;
+    line-height: 2.5rem;
     font-size: 1.25rem;
+}
+
+@media screen and (max-width: 1200px) {
+    .current-temp{
+        line-height: 8rem;
+        font-size: 6rem;
+    }
+
+    .current-temp img{
+        height: 3rem;
+        width: 3rem;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .current-temp{
+        line-height: 6rem;
+        font-size: 4rem;
+    }
+
+    .current-condition .current-weather-image{
+        height: 2rem;
+        width: 2rem;
+    }
+
+    .feels-like{
+        padding-left: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .current-temp{
+        line-height: 4rem;
+        font-size: 3rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    .content{
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .weather-input{
+        height: fit-content;
+        width: 100%;
+        margin: 0;
+    }
+
+    .weather-data{
+        display: block;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        margin: 1rem 0 0 0;
+    }
+
+    .today{
+        padding-left: 0;
+        margin-bottom: 1rem;
+    }
+
+    .current-data{
+        max-width: 100%;
+    }
+
+    .current-temp{
+        line-height: 8rem;
+        font-size: 6rem;
+    }
+
+    .current-temp img{
+        height: 3rem;
+        width: 3rem;
+    }
+
+    #weather-description{
+        margin-bottom: 1rem;
+    }
+
+    .flex-justify-middle{
+        flex-direction: column;
+        
+    }
+
+    .flex-row-justify-middle{
+        justify-content: center;
+    }
+
+    #future-days{
+        flex-direction: column;
+    }
 }
 
 
