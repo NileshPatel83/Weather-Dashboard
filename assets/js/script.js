@@ -5,10 +5,10 @@ const reqWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast';
 const reqCityDataURL = 'http://api.openweathermap.org/geo/1.0/direct?q=';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
 
-let cityLocation = {
-    lat: 0,
-    lon: 0
-};
+// let cityLocation = {
+//     lat: 0,
+//     lon: 0
+// };
     
 const options = {
     enableHighAccuracy: true,
@@ -19,33 +19,62 @@ const options = {
 
 init();
 
-async function init(){
+function init(){
 
-    await getCurrentLocationData();
-
-    console.log(cityLocation);
+    let cityLocation= getCurrentLocationData();
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) return
 }
 
-async function getCurrentLocationData(){
+function getCurrentLocationData(){
 
     navigator.geolocation.getCurrentPosition(success, error, options);
 
-    // if (navigator.geolocation) {
-    //     return navigator.geolocation.watchPosition(success, error, options);
-    //   } else { 
-    //     cityLocation = await getDefaultCityLocation(defaultCityName);
-    //   }
+
 }
 
-async function getDefaultCityLocation(defaultCityName){
+async function success(pos) {
+
+    let cityLocation = {
+        lat: 0,
+        lon: 0
+    };
+
+    const crd = pos.coords;
+
+    if(crd.latitude === 0 && crd.longitude === 0){
+
+        cityLocation = await getDefaultCityLocation();
+
+    } else {
+
+        cityLocation = {
+            lat: crd.latitude,
+            lon: crd.longitude
+        };
+       
+    }
+
+    let storage = {
+        curLocation: cityLocation,
+        cityNames:[]
+    };
+
+    addUpdateLocalStorage(storage);
+}
+
+async function getDefaultCityLocation(){
+
+    let cityLocation = {
+        lat: 0,
+        lon: 0
+    };
 
     let defaultCityLocation = await getLocationDataByCityName(defaultCityName);
-    if(typeof(defaultCityLocation) === 'undefined') return 'undefined';
 
-    let location = {
-        lat: defaultCityLocation[0].lat,
-        lon: defaultCityLocation[0].lon
-    };
+    if(typeof(defaultCityLocation) !== 'undefined'){
+        cityLocation.lat =  defaultCityLocation[0].lat,
+        cityLocation.lon = defaultCityLocation[0].lon
+    }
 
     return location;
 }
@@ -59,20 +88,8 @@ async function getLocationDataByCityName(cityName){
     return response.json();
 }
 
-function success(pos) {
-
-    const crd = pos.coords;
-
-    cityLocation = {
-        lat: crd.latitude,
-        lon: crd.longitude
-    };
-
-    let storage = {
-      curLocation: cityLocation,
-      cityNames:[]
-    };
-
+//Adds/updates local storage.
+function addUpdateLocalStorage(storage){
     localStorage.setItem(storageKey, JSON.stringify(storage));
 }
   
