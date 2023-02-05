@@ -23,12 +23,21 @@ async function init(){
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return
 
     let cityName = await getCityName(cityLocation);
-    console.log(cityName);
 
-    // updateCityName();
+    updateCityName(cityName);
 
-    // let cityNameEl = document.getElementById(cityNameID);
+}
 
+function updateCityName(cityName){
+
+    let cityNameEl = document.getElementById(cityNameID);
+
+    let innerHTML = cityNameEl.innerHTML;
+    let innerText = cityNameEl.innerText;
+
+    innerHTML = innerHTML.replace(innerText, cityName);
+
+    cityNameEl.innerHTML = innerHTML;
 }
 
 async function getCityName(cityLocation){
@@ -79,7 +88,7 @@ async function success(pos) {
 
     if(crd.latitude === 0 && crd.longitude === 0){
 
-        cityLocation = getDefaultCityLocation();
+        cityLocation = await getDefaultCityLocation();
 
     } else {
 
