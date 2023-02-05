@@ -19,36 +19,41 @@ init();
 
 async function init(){
 
+    //Gets lat and lon of user location.
+    //Gets lat and lon of Sydney, if fails to get user location.
     let cityLocation= getCurrentLocationData();
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return
 
+    //Gets the city name from lat and lon.
     let cityName = await getCityName(cityLocation);
 
+    //Updates the city name element in browser.
     updateCityName(cityName);
-
 }
 
+//Updates the city name element in browser.
 function updateCityName(cityName){
 
+    //Gets the city name h2 element and updates its inner HTML.
     let cityNameEl = document.getElementById(cityNameID);
 
-    let innerHTML = cityNameEl.innerHTML;
-    let innerText = cityNameEl.innerText;
-
-    innerHTML = innerHTML.replace(innerText, cityName);
-
-    cityNameEl.innerHTML = innerHTML;
+    cityNameEl.innerHTML = `<img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">${cityName}`;
 }
 
+//Gets the city name from lat and lon.
 async function getCityName(cityLocation){
 
+    //Gets the city name from lat and lon using API.
     let cityData = await getCityNameFromAPI(cityLocation);
 
+    //Returns thecity name from response ontained from API.
     return cityData[0].name;
 }
 
+//Gets the city name from lat and lon using API.
 async function getCityNameFromAPI(cityLocation){
 
+    //Creates a URL to fetch city name data.
     let url = `${reqCityNameURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&limit=1&appid=${apiKey}`;
 
     const response = await fetch(url);
@@ -56,6 +61,8 @@ async function getCityNameFromAPI(cityLocation){
     return response.json();
 }
 
+//Gets lat and lon of user location.
+//Gets lat and lon of Sydney, if fails to get user location.
 function getCurrentLocationData(){
 
     let cityLocation = {
@@ -63,8 +70,12 @@ function getCurrentLocationData(){
         lon: 0
     };
 
+    //Tries to get the user location.
+    //If fails, gets lat an lon for Sydney and
+    //Stores into location storage.
     navigator.geolocation.getCurrentPosition(success, error, options);
 
+    //Ges the local storage.
     let storage = getLocalStorage();
     if(storage !== null){
 
@@ -74,9 +85,11 @@ function getCurrentLocationData(){
         };
     }
 
+    //Returns city lat and lon.
     return cityLocation;
 }
 
+//Gets the city lat and lon.
 async function success(pos) {
 
     let cityLocation = {
@@ -86,6 +99,8 @@ async function success(pos) {
 
     const crd = pos.coords;
 
+    //Tries to get user location data.
+    //If fails, gets lat an lon for Sydney.
     if(crd.latitude === 0 && crd.longitude === 0){
 
         cityLocation = await getDefaultCityLocation();
@@ -104,9 +119,11 @@ async function success(pos) {
         cityNames:[]
     };
 
+    //Updates local storage with city lat and lon.
     addUpdateLocalStorage(storage);
 }
 
+//Gets lat an lon for Sydney.
 async function getDefaultCityLocation(){
 
     let cityLocation = {
@@ -114,6 +131,7 @@ async function getDefaultCityLocation(){
         lon: 0
     };
 
+    //Gets lat an lon for Sydney using API.
     let defaultCityLocation = await getLocationDataByCityName(defaultCityName);
 
     if(typeof(defaultCityLocation) !== 'undefined'){
@@ -124,6 +142,7 @@ async function getDefaultCityLocation(){
     return cityLocation;
 }
 
+//Gets lat an lon for Sydney using API.
 async function getLocationDataByCityName(cityName){
 
     let url = `${reqCityDataURL}${cityName}&limit=1&appid=${apiKey}`;
@@ -149,7 +168,8 @@ function getLocalStorage(){
 
     return JSON.parse(storage);
 }
-  
+
+//Logs the error in consol log.
 function error(err) {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
+    //console.warn(`ERROR(${err.code}): ${err.message}`);
 }
