@@ -1,7 +1,7 @@
 //Constants
 const storageKey = 'weather-dashboard';
 const defaultCityName = 'Sydney';
-const reqWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast';
+const reqCurrentWeatherURL = 'https://api.openweathermap.org/data/2.5/weather?';
 const reqCityDataURL = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const reqCityNameURL = 'https://api.openweathermap.org/geo/1.0/reverse?';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
@@ -33,6 +33,27 @@ async function init(){
 
     //Updates value of present day and date.
     updatePresentDay();
+
+    //Gets current weather information.
+    let currentWeatherData = await getCurrentWeatherData(cityLocation);
+    
+    //Updates current weather information in browser.
+    updateCurrentWeatherInformation(currentWeatherData);
+}
+
+//Updates current weather information in browser.
+function updateCurrentWeatherInformation(currentWeatherData){
+    
+}
+
+//Gets current weather information.
+async function getCurrentWeatherData(cityLocation){
+
+    let url = `${reqCurrentWeatherURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&units=metric&appid=${apiKey}`;
+
+    const response = await fetch(url);
+
+    return response.json();
 }
 
 //Updates value of present day and date.
