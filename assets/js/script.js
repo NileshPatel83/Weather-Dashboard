@@ -6,18 +6,26 @@ const reqCityDataURL = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const reqCityNameURL = 'https://api.openweathermap.org/geo/1.0/reverse?';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
 
+//ID Names.
 const cityNameID = 'city-name';
 const presentDayID = 'present-day-name';
 const currentTempID = 'current-temperature';
 const feelsLikeID = 'feels-like';
 const currentWeatherIconID = 'current-weather-icon';
 const currentWeatherDescID = 'current-weather-description';
-const curentHighTempID = 'current-high-temperature';
+const currentHighTempID = 'current-high-temperature';
 const currentLowTempID = 'current-low-temperature';
 const currentWindID = 'current-wind';
 const currentHumidityID = 'current-humidity';
 const currentSunriseID = 'current-sunrise';
 const currentSunsetID = 'current-sunset';
+
+//Class Names
+const flexRowJustMiddle = 'flex-row-justify-middle';
+
+//DOM Elements
+const presentDayContainer = document.getElementById('present-day');
+const futureDaysContainer = document.getElementById('future-days');
     
 const options = {
     enableHighAccuracy: true,
@@ -30,16 +38,23 @@ init();
 
 async function init(){
 
+    //Adds temporary loading text while weather data is obtained.
+    let h2El = addTemporaryLoadingText();
+
     //Gets lat and lon of user location.
     //Gets lat and lon of Sydney, if fails to get user location.
     let cityLocation= getCurrentLocationData();
-    if(cityLocation.lat === 0 && cityLocation.lon === 0) return
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) return;
 
     //Gets the city name from lat and lon.
     let cityName = await getCityName(cityLocation);
+    if(cityName === '') return;
 
-    //Updates the city name element in browser.
-    updateCityName(cityName);
+    //Removes temporary loading text once weather data is obtained.
+    h2El.remove();
+
+    //Adds the city name element in browser.
+    addCityName(cityName);
 
     //Updates value of present day and date.
     updatePresentDay();
@@ -50,6 +65,15 @@ async function init(){
     
     //Updates current weather information in browser.
     updateCurrentWeatherInformation(currentWeatherData);
+}
+
+//Adds temporary loading text while weather data is obtained.
+function addTemporaryLoadingText(){
+    let h2El = document.createElement('h2');
+    h2El.textContent = "Loading..."
+    presentDayContainer.append(h2El);
+
+    return h2El;
 }
 
 //Updates current weather information in browser.
@@ -65,17 +89,22 @@ function updateCurrentWeatherInformation(currentWeatherData){
     let feelsLike = Math.round(currentWeatherData.main.feels_like * 10)/ 10;
     feelsLikeEL.innerHTML = `<img src="/assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
 
-    //Updates current weather icon.
+    //Gest URL for weather icon.
     let iconURL = getIconURL(currentWeatherData.weather[0].icon);
+
+    //Updates current weather icon.
     let currWeatherIconEL = document.getElementById(currentWeatherIconID);
     currWeatherIconEL.src = iconURL;
 
-    //Updates current weather description.
-    let currWeatherDescEL = document.getElementById(currentWeatherDescID);
-
     //Gets current weather description with first letter capital in each word.
     let currWeatherDesc = getWeatherDescription(currentWeatherData.weather[0].description);
+
+    //Updates current weather description.
+    let currWeatherDescEL = document.getElementById(currentWeatherDescID);
     currWeatherDescEL.innerHTML = currWeatherDesc;
+
+    let currHighTempEL = document.getElementById(currentHighTempID);
+    //currHighTempEL.textContent = 
 }
 
 //Gest URL for weather icon.
@@ -113,12 +142,16 @@ function updatePresentDay(){
     dayNameEl.innerHTML = dayjs().format('dddd- DD/MM/YYYY');
 }
 
-//Updates the city name element in browser.
-function updateCityName(cityName){
+//Adds the city name element in browser.
+function addCityName(cityName){
 
-    //Gets the city name h2 element and updates its inner HTML.
-    let cityNameEl = document.getElementById(cityNameID);
+    //Creates h2 element, adds id and class name.
+    //Sets inner html text to show city name.
+    let cityNameEl = document.createElement('h2');
+    cityNameEl.id = cityNameID;
+    cityNameEl.className = flexRowJustMiddle;
     cityNameEl.innerHTML = `<img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">${cityName}`;
+    presentDayContainer.append(cityNameEl);
 }
 
 //Gets the city name from lat and lon.
@@ -126,6 +159,7 @@ async function getCityName(cityLocation){
 
     //Gets the city name from lat and lon using API.
     let cityData = await getCityNameFromAPI(cityLocation);
+    if(typeof(cityData) === 'undefined') return '';
 
     //Returns thecity name from response ontained from API.
     return cityData[0].name;

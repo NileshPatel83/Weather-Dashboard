@@ -76,13 +76,16 @@ h1{
     margin: 1rem 1rem 0 1rem;
 }
 
-#favourite-city-container{
+#favourite-city-container{   
+    display: flex;
+    flex-direction: column;
+}
+
+.top-border{
     margin-top: 1rem;
     border: 1px solid grey;
     border-radius: 0.25rem;
     border-bottom:  none;
-    display: flex;
-    flex-direction: column;
 }
 
 .favourite-city{
@@ -165,7 +168,7 @@ h1{
     width: 3rem;
 }
 
-.current-condition .current-weather-image{
+.current-condition .current-weather-icon{
     height: 10rem;
     width: 10rem;
 }
@@ -250,7 +253,7 @@ h1{
     margin-bottom: 0.5rem;
 }
 
-.future-weather-image{
+.future-weather-icon{
     height: 6rem;
     width: 6rem;
 }
