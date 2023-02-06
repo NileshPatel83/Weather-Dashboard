@@ -34,7 +34,14 @@ const currWeatherIconCl = 'current-weather-icon';
 const currWeatherDescCl = 'current-weather-description';
 const currOthInfoCl = 'current-other-info';
 const lineHgt2remCl = 'line-height-2rem';
-
+const futureDayCl = 'future-day';
+const datValueCl = 'day-value';
+const dayDateCl = 'day-date';
+const weekendCl = 'weekend';
+const dayDataCl = 'day-data';
+const futMainSummCl = 'future-main-summary';
+const futWeatherIconCl = 'future-weather-icon';
+const futWeatherDescCl = 'future-weather-description';
 
 //DOM Elements
 const presentDayContainer = document.getElementById('present-day');
@@ -59,7 +66,7 @@ async function init(){
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return;
     
     //Adds current weather information.
-    addsCurrentWeatherInformation(cityLocation, h2El);
+    addCurrentWeatherInformation(cityLocation, h2El);
 
     //Adds 5 day forecast information.
     addForecastWeatherInformation(cityLocation);
@@ -77,8 +84,18 @@ async function addForecastWeatherInformation(cityLocation){
     //Filters one forecast for each day.
     let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('06:00:00') !== -1);
 
-    
+    //Adds weather forecast for each day.
+    forecastWeather.foreach(addForecastWeatherInformation);
+}
 
+//Adds weather forecast for each day.
+function addForecastWeatherInformation(weatherData){
+
+    //Creates div container that holds all weather data.
+    let futCondEl = document.createElement('div');
+    futCondEl.className = futureDayCl;
+
+    
 }
 
 //Gets forecast weather for the city.
@@ -92,7 +109,7 @@ async function getForecastWeatherData(cityLocation){
 }
 
 //Updates current weather information in browser.
-async function addsCurrentWeatherInformation(cityLocation, h2El){
+async function addCurrentWeatherInformation(cityLocation, h2El){
 
     //Gets the city name from lat and lon.
     let cityName = await getCityName(cityLocation);
