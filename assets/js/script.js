@@ -45,7 +45,6 @@ const options = {
     maximumAge: 0
 };
 
-
 init();
 
 async function init(){
@@ -118,7 +117,7 @@ function addOtherWeatherInformation(weatherData, currCondEl){
     //Create div element to display low temperature.
     let lowTempEl = document.createElement('div');
     lowTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    lowTempEl.innerHTML = `<img src="/assets/images/High-Temperature.png" alt="High temperature icon">${lowTemp}&#176C`;
+    lowTempEl.innerHTML = `<img src="/assets/images/Low-Temperature.png" alt="Low temperature icon">${lowTemp}&#176C`;
 
     //Gets wind speed with one decimal place.
     let windSpeed = Math.round(weatherData.wind.speed * 10)/ 10;
