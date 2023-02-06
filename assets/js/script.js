@@ -2,11 +2,12 @@
 const storageKey = 'weather-dashboard';
 const defaultCityName = 'Sydney';
 const reqWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast';
-const reqCityDataURL = 'http://api.openweathermap.org/geo/1.0/direct?q=';
-const reqCityNameURL = 'http://api.openweathermap.org/geo/1.0/reverse?';
+const reqCityDataURL = 'https://api.openweathermap.org/geo/1.0/direct?q=';
+const reqCityNameURL = 'https://api.openweathermap.org/geo/1.0/reverse?';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
 
 const cityNameID = 'city-name';
+const presentDayID = 'present-day-name';
     
 const options = {
     enableHighAccuracy: true,
@@ -29,6 +30,17 @@ async function init(){
 
     //Updates the city name element in browser.
     updateCityName(cityName);
+
+    //Updates value of present day and date.
+    updatePresentDay();
+}
+
+//Updates value of present day and date.
+function updatePresentDay(){
+
+    //Gets the day name div element and updates its inner HTML.
+    let dayNameEl = document.getElementById(presentDayID);
+    dayNameEl.innerHTML = dayjs().format('dddd- DD/MM/YYYY');
 }
 
 //Updates the city name element in browser.
@@ -36,7 +48,6 @@ function updateCityName(cityName){
 
     //Gets the city name h2 element and updates its inner HTML.
     let cityNameEl = document.getElementById(cityNameID);
-
     cityNameEl.innerHTML = `<img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">${cityName}`;
 }
 
