@@ -66,6 +66,9 @@ function updateCurrentWeatherInformation(currentWeatherData){
     feelsLikeEL.innerHTML = `<img src="/assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
 
     //Updates current weather icon.
+    let iconURL = getIconURL(currentWeatherData.weather[0].icon);
+    let currWeatherIconEL = document.getElementById(currentWeatherIconID);
+    currWeatherIconEL.src = iconURL;
 
     //Updates current weather description.
     let currWeatherDescEL = document.getElementById(currentWeatherDescID);
@@ -73,6 +76,11 @@ function updateCurrentWeatherInformation(currentWeatherData){
     //Gets current weather description with first letter capital in each word.
     let currWeatherDesc = getWeatherDescription(currentWeatherData.weather[0].description);
     currWeatherDescEL.innerHTML = currWeatherDesc;
+}
+
+//Gest URL for weather icon.
+function getIconURL(icon){
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 }
 
 //Gets current weather description with first letter capital in each word.
