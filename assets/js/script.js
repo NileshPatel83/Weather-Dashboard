@@ -2,6 +2,7 @@
 const storageKey = 'weather-dashboard';
 const defaultCityName = 'Sydney';
 const reqCurrentWeatherURL = 'https://api.openweathermap.org/data/2.5/weather?';
+const reqForecastWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast?';
 const reqCityDataURL = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const reqCityNameURL = 'https://api.openweathermap.org/geo/1.0/reverse?';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
@@ -33,7 +34,14 @@ const currWeatherIconCl = 'current-weather-icon';
 const currWeatherDescCl = 'current-weather-description';
 const currOthInfoCl = 'current-other-info';
 const lineHgt2remCl = 'line-height-2rem';
-
+const futureDayCl = 'future-day';
+const datValueCl = 'day-value';
+const dayDateCl = 'day-date';
+const weekendCl = 'weekend';
+const dayDataCl = 'day-data';
+const futMainSummCl = 'future-main-summary';
+const futWeatherIconCl = 'future-weather-icon';
+const futWeatherDescCl = 'future-weather-description';
 
 //DOM Elements
 const presentDayContainer = document.getElementById('present-day');
@@ -56,6 +64,52 @@ async function init(){
     //Gets lat and lon of Sydney, if fails to get user location.
     let cityLocation= getCurrentLocationData();
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return;
+    
+    //Adds current weather information.
+    addCurrentWeatherInformation(cityLocation, h2El);
+
+    //Adds 5 day forecast information.
+    addForecastWeatherInformation(cityLocation);
+}
+
+//Adds 5 day forecast information.
+async function addForecastWeatherInformation(cityLocation){
+
+    //Gets forecast weather for the city.
+    let weatherData = await getForecastWeatherData(cityLocation);
+    if(typeof(weatherData) === 'undefined'){
+        return;
+    }
+
+    //Filters one forecast for each day.
+    let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('06:00:00') !== -1);
+
+    //Adds weather forecast for each day.
+    forecastWeather.foreach(addForecastWeatherInformation);
+}
+
+//Adds weather forecast for each day.
+function addForecastWeatherInformation(weatherData){
+
+    //Creates div container that holds all weather data.
+    let futCondEl = document.createElement('div');
+    futCondEl.className = futureDayCl;
+
+    
+}
+
+//Gets forecast weather for the city.
+async function getForecastWeatherData(cityLocation){
+
+    let url = `${reqForecastWeatherURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&appid=${apiKey}&units=metric`;
+
+    const response = await fetch(url);
+
+    return response.json();
+}
+
+//Updates current weather information in browser.
+async function addCurrentWeatherInformation(cityLocation, h2El){
 
     //Gets the city name from lat and lon.
     let cityName = await getCityName(cityLocation);
@@ -63,22 +117,16 @@ async function init(){
 
     //Gets current weather information.
     let currentWeatherData = await getCurrentWeatherData(cityLocation);
-    console.log(currentWeatherData);
+    if(typeof(currentWeatherData) === 'undefined'){
+        h2El.innerHTML= `Failed to get weather data for ${cityName}`;
+        return;
+    }
 
     //Removes temporary loading text once weather data is obtained.
     h2El.remove();
 
     //Adds city name, current day and date information.
     addLocationInformation(cityName);
-    
-    //Adds current weather information.
-    addsCurrentWeatherInformation(currentWeatherData);
-
-    //Adds 5 day forecast information.
-}
-
-//Updates current weather information in browser.
-function addsCurrentWeatherInformation(currentWeatherData){
 
     //Creates div container that holds all weather data.
     let currCondEl = document.createElement('div');
@@ -91,60 +139,70 @@ function addsCurrentWeatherInformation(currentWeatherData){
     addCurrentWeatherConditionInformation(currentWeatherData, currCondEl);
 
     //Adds other weather information.
-    addOtherWeatherInformation(currentWeatherData, currCondEl);
+    addOtherWeatherInformation(currentWeatherData, currCondEl, true);
 
     presentDayContainer.append(currCondEl);
 }
 
 //Adds other weather information.
-function addOtherWeatherInformation(weatherData, currCondEl){
+function addOtherWeatherInformation(weatherData, containerEl, showHighTemp){
+
+    let highTempEl;
+    let lowTempEl;
 
     //Creates div element for current weather icon and description information.
     let otherWeatherEl = document.createElement('div');
     otherWeatherEl.className = currOthInfoCl;
 
-    //Gets high temperature with one decimal place.
-    let highTemp = Math.round(weatherData.main.temp_max * 10)/ 10;
+    //Only displays high and low temperature if specified.
+    if(showHighTemp){
+        //Gets high temperature with one decimal place.
+        let highTemp = Math.round(weatherData.main.temp_max * 10)/ 10;
 
-    //Create div element to display high temperature.
-    let highTempEl = document.createElement('div');
-    highTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    highTempEl.innerHTML = `<img src="../assets/images/High-Temperature.png" alt="High temperature icon">${highTemp}&#176C`;
+        //Create div element to display high temperature.
+        highTempEl = document.createElement('div');
+        highTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+        highTempEl.innerHTML = `<img src="assets/images/High-Temperature.png" alt="High temperature icon">${highTemp}&#176C`;
 
-    //Gets low temperature with one decimal place.
-    let lowTemp = Math.round(weatherData.main.temp_min * 10)/ 10;
+        //Gets low temperature with one decimal place.
+        let lowTemp = Math.round(weatherData.main.temp_min * 10)/ 10;
 
-    //Create div element to display low temperature.
-    let lowTempEl = document.createElement('div');
-    lowTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    lowTempEl.innerHTML = `<img src="../assets/images/Low-Temperature.png" alt="Low temperature icon">${lowTemp}&#176C`;
+        //Create div element to display low temperature.
+        lowTempEl = document.createElement('div');
+        lowTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+        lowTempEl.innerHTML = `<img src="assets/images/Low-Temperature.png" alt="Low temperature icon">${lowTemp}&#176C`;
+    }
 
     //Gets wind speed with one decimal place.
-    let windSpeed = Math.round(weatherData.wind.speed * 10)/ 10;
+    let windSpeed = Math.round(weatherData.wind.speed * 36)/ 10;
 
     //Create div element to display wind speed.
     let windSpeedEl = document.createElement('div');
     windSpeedEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    windSpeedEl.innerHTML = `<img src="../assets/images/Wind.png" alt="Wind icon">${windSpeed * 3.6} km/h`;
+    windSpeedEl.innerHTML = `<img src="assets/images/Wind.png" alt="Wind icon">${windSpeed} km/h`;
 
     //Create div element to display humidity.
     let humidityEl = document.createElement('div');
     humidityEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    humidityEl.innerHTML = `<img src="../assets/images/Humidity.png" alt="Humidity icon">${weatherData.main.humidity}%`;
+    humidityEl.innerHTML = `<img src="assets/images/Humidity.png" alt="Humidity icon">${weatherData.main.humidity}%`;
 
     //Create div element to display sunrise time.
     let sunriseEl = document.createElement('div');
     sunriseEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    sunriseEl.innerHTML = `<img src="../assets/images/Sunrise.png" alt="Sunrise icon">${dayjs(weatherData.sys.sunrise * 1000).format('hh:mm A')}`;
+    sunriseEl.innerHTML = `<img src="assets/images/Sunrise.png" alt="Sunrise icon">${dayjs(weatherData.sys.sunrise * 1000).format('hh:mm A')}`;
 
     //Create div element to display sunset time.
     let sunsetEl = document.createElement('div');
     sunsetEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    sunsetEl.innerHTML = `<img src="../assets/images/Sunset.png" alt="Sunset icon">${dayjs(weatherData.sys.sunset * 1000).format('hh:mm A')}`;
+    sunsetEl.innerHTML = `<img src="assets/images/Sunset.png" alt="Sunset icon">${dayjs(weatherData.sys.sunset * 1000).format('hh:mm A')}`;
 
-    otherWeatherEl.append(highTempEl, lowTempEl, windSpeedEl, humidityEl, sunriseEl, sunsetEl);
+    if(showHighTemp){
+        otherWeatherEl.append(highTempEl, lowTempEl, windSpeedEl, humidityEl, sunriseEl, sunsetEl);
+    } else{
+        otherWeatherEl.append(windSpeedEl, humidityEl, sunriseEl, sunsetEl);
+    }
 
-    currCondEl.append(otherWeatherEl);
+    containerEl.append(otherWeatherEl);
 }
 
 //Adds current weather icon and weather condition.
@@ -206,7 +264,7 @@ function addCurrentTemperatureInformation(weatherData, currCondEl){
     //Create div element to display current temperature.
     let currTempEl = document.createElement('div');
     currTempEl.className = currTempCl;
-    currTempEl.innerHTML = `<img src="../assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
+    currTempEl.innerHTML = `<img src="assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
 
     //Gets feel like temperature with one decimal place.
     let feelsLike = Math.round(weatherData.main.feels_like * 10)/ 10;
@@ -214,7 +272,7 @@ function addCurrentTemperatureInformation(weatherData, currCondEl){
      //Create div element to display feels like temperature.
     let feelsLikeEL = document.createElement('div');
     feelsLikeEL.className = `${feelLikeCl} ${flexRowJustMiddleCl}`
-    feelsLikeEL.innerHTML = `<img src="../assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
+    feelsLikeEL.innerHTML = `<img src="assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
 
     currDataEl.append(currTempEl, feelsLikeEL);
 
@@ -250,7 +308,7 @@ function addCityName(cityName){
     let cityNameEl = document.createElement('h2');
     //cityNameEl.id = cityNameID;
     cityNameEl.className = flexRowJustMiddleCl;
-    cityNameEl.innerHTML = `<img class="location-tag" src="../assets/images/Location.png" alt="Location pin icon">${cityName}`;
+    cityNameEl.innerHTML = `<img class="location-tag" src="assets/images/Location.png" alt="Location pin icon">${cityName}`;
     presentDayContainer.append(cityNameEl);
 }
 
