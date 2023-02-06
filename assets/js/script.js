@@ -6,6 +6,7 @@ const reqForecastWeatherURL = 'https://api.openweathermap.org/data/2.5/forecast?
 const reqCityDataURL = 'https://api.openweathermap.org/geo/1.0/direct?q=';
 const reqCityNameURL = 'https://api.openweathermap.org/geo/1.0/reverse?';
 const apiKey = '54235d685be1b7eea306dd40934a9322';
+const weekends = ['Saturday', 'Sunday'];
 
 //ID Names.
 //const cityNameID = 'city-name';
@@ -35,7 +36,7 @@ const currWeatherDescCl = 'current-weather-description';
 const currOthInfoCl = 'current-other-info';
 const lineHgt2remCl = 'line-height-2rem';
 const futureDayCl = 'future-day';
-const datValueCl = 'day-value';
+const dayValueCl = 'day-value';
 const dayDateCl = 'day-date';
 const weekendCl = 'weekend';
 const dayDataCl = 'day-data';
@@ -82,20 +83,51 @@ async function addForecastWeatherInformation(cityLocation){
     }
 
     //Filters one forecast for each day.
-    let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('06:00:00') !== -1);
+    let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('15:00:00') !== -1);
 
-    //Adds weather forecast for each day.
-    forecastWeather.foreach(addForecastWeatherInformation);
-}
-
-//Adds weather forecast for each day.
-function addForecastWeatherInformation(weatherData){
-
-    //Creates div container that holds all weather data.
+    //Creates div container that holds all forecast weather data.
     let futCondEl = document.createElement('div');
     futCondEl.className = futureDayCl;
 
-    
+    //Adds weather forecast for each day.
+    for (let i = 0; i < forecastWeather.length; i++) {
+        addForecastDayWeatherInformation(forecastWeather[i], futCondEl)
+    }
+
+    futureDaysContainer.append(futCondEl);
+}
+
+//Adds weather forecast for each day.
+function addForecastDayWeatherInformation(weatherData, futCondEl){
+
+    console.log(weatherData);
+
+    //Adds forecast day and date.
+    addForecastDay(weatherData, futCondEl);
+
+
+}
+
+//Adds forecast day and date.
+function addForecastDay(weatherData, futCondEl){
+
+    //Creates div container that holds day and date.
+    let dayCondEl = document.createElement('div');
+    dayCondEl.className = dayValueCl;
+
+    //Creates div container that holds day name.
+    let dayNameEl = document.createElement('div');
+    dayNameEl.className = dayDateCl;
+    dayNameEl.innerHTML = dayjs(weatherData.dt* 1000).format('dddd');
+
+    //Creates div container that holds date.
+    let dateCondEl = document.createElement('div');
+    dateCondEl.className = dayDateCl;
+    dateCondEl.innerHTML = dayjs(weatherData.dt* 1000).format('DD/MM/YYYY');
+
+    dayCondEl.append(dayNameEl, dateCondEl);
+
+    futCondEl.append(dayCondEl);
 }
 
 //Gets forecast weather for the city.
