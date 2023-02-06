@@ -72,15 +72,46 @@ async function addForecastWeatherInformation(cityLocation){
         return;
     }
 
-    console.log(weatherData);
-
-    //Filters one forecast for each day.
-    let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('15:00:00') !== -1);
+    //Gets 5 day forecast weather.
+    let forecastWeather = getFiveDayForecastWeatherData(weatherData);
+    if(forecastWeather.length === 0) return;
 
     //Adds weather forecast for each day.
     for (let i = 0; i < forecastWeather.length; i++) {
         addForecastDayWeatherInformation(forecastWeather[i])
     }
+}
+
+//Gets 5 day forecast weather.
+function getFiveDayForecastWeatherData(weatherData){
+
+    let forecastWeather = [];
+
+    const today = dayjs().format('DD/MM/YYYY');
+
+    //Loops through all forecast weather data.
+    //Weather data contains multiple entries for same day.
+    for (let i = 0; i < weatherData.list.length; i++) {
+
+        const data = weatherData.list[i];
+        
+        //Gets weather data date in local time.
+        let dataDate = dayjs(data.dt * 1000).format('DD/MM/YYYY');
+
+        //Only processes the weather data if it is not today and future data.
+        if(today !== dataDate){
+
+            //Checks whether the future date is already added to the list or not.
+            //Only adds the data to the list if the data for the same day is not added already.
+            let dateAdded = forecastWeather.filter(dayForecast => dayjs(dayForecast.dt * 1000).format('DD/MM/YYYY') === dataDate);
+
+            if(dateAdded.length === 0){
+                forecastWeather.push(data);
+            }
+        }
+    }
+
+    return forecastWeather;
 }
 
 //Adds weather forecast for each day.
