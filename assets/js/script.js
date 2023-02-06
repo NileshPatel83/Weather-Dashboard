@@ -85,40 +85,85 @@ async function addForecastWeatherInformation(cityLocation){
     //Filters one forecast for each day.
     let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('15:00:00') !== -1);
 
+    //Adds weather forecast for each day.
+    for (let i = 0; i < forecastWeather.length; i++) {
+        addForecastDayWeatherInformation(forecastWeather[i])
+    }
+
+    
+}
+
+//Adds weather forecast for each day.
+function addForecastDayWeatherInformation(weatherData){
+
+    console.log(weatherData);
+
     //Creates div container that holds all forecast weather data.
     let futCondEl = document.createElement('div');
     futCondEl.className = futureDayCl;
 
-    //Adds weather forecast for each day.
-    for (let i = 0; i < forecastWeather.length; i++) {
-        addForecastDayWeatherInformation(forecastWeather[i], futCondEl)
-    }
+    //Adds forecast day and date.
+    addForecastDay(weatherData, futCondEl);
+
+    //Creates div container that holds other forecast weather information.
+    let dayDataCondEl = document.createElement('div');
+    dayDataCondEl.className = dayDataCl;
+
+    //Adds current weather icon and weather condition.
+    addForecastWeatherConditionInformation(weatherData, dayDataCondEl);
+
+    futCondEl.append(dayDataCondEl);
 
     futureDaysContainer.append(futCondEl);
 }
 
-//Adds weather forecast for each day.
-function addForecastDayWeatherInformation(weatherData, futCondEl){
+//Adds current weather icon and weather condition.
+function addForecastWeatherConditionInformation(weatherData, dayDataCondEl){
 
-    console.log(weatherData);
+    //Creates div element for forecast weather icon and description information.
+    let futWeatherEl = document.createElement('div');
+    futWeatherEl.className = futMainSummCl;
 
-    //Adds forecast day and date.
-    addForecastDay(weatherData, futCondEl);
+    //Gest URL for weather icon.
+    let iconURL = getIconURL(weatherData.weather[0].icon);
 
+    //Creates img element to display forecast weather icon.
+    let futWeatherIconEL = document.createElement('img');
+    futWeatherIconEL.className = futWeatherIconCl;
+    futWeatherIconEL.src = iconURL;
+    futWeatherIconEL.alt = 'Weather icon';
 
+    //Gets forecast weather description with first letter capital in each word.
+    let futWeatherDesc = getWeatherDescription(weatherData.weather[0].description);
+
+    //Adds div element to display forecast weather description.
+    let futWeatherDescEL = document.createElement('div');
+    futWeatherDescEL.className = futWeatherDescCl;
+    futWeatherDescEL.innerHTML = futWeatherDesc;
+
+    futWeatherEl.append(futWeatherIconEL, futWeatherDescEL);
+
+    dayDataCondEl.append(futWeatherEl);
 }
 
 //Adds forecast day and date.
 function addForecastDay(weatherData, futCondEl){
 
+    let dayClassName = dayValueCl;
+    let dayName = dayjs(weatherData.dt* 1000).format('dddd');
+    
+    if(weekends.includes(dayName)){
+        dayClassName += ` ${weekendCl}`;
+    }
+
     //Creates div container that holds day and date.
     let dayCondEl = document.createElement('div');
-    dayCondEl.className = dayValueCl;
+    dayCondEl.className = dayClassName;
 
     //Creates div container that holds day name.
     let dayNameEl = document.createElement('div');
     dayNameEl.className = dayDateCl;
-    dayNameEl.innerHTML = dayjs(weatherData.dt* 1000).format('dddd');
+    dayNameEl.innerHTML = dayName;
 
     //Creates div container that holds date.
     let dateCondEl = document.createElement('div');
