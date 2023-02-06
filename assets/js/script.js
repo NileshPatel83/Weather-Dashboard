@@ -91,20 +91,72 @@ function addsCurrentWeatherInformation(currentWeatherData){
     //Adds current weather icon and weather condition.
     addCurrentWeatherConditionInformation(currentWeatherData, currCondEl);
 
-    
+    //Adds other weather information.
+    addOtherWeatherInformation(currentWeatherData, currCondEl);
 
     presentDayContainer.append(currCondEl);
 }
 
+//Adds other weather information.
+function addOtherWeatherInformation(weatherData, currCondEl){
+
+    //Creates div element for current weather icon and description information.
+    let otherWeatherEl = document.createElement('div');
+    otherWeatherEl.className = currOthInfoCl;
+
+    //Gets high temperature with one decimal place.
+    let highTemp = Math.round(weatherData.main.temp_max * 10)/ 10;
+
+    //Create div element to display high temperature.
+    let highTempEl = document.createElement('div');
+    highTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+    highTempEl.innerHTML = `<img src="/assets/images/High-Temperature.png" alt="High temperature icon">${highTemp}&#176C`;
+
+    //Gets low temperature with one decimal place.
+    let lowTemp = Math.round(weatherData.main.temp_min * 10)/ 10;
+
+    //Create div element to display low temperature.
+    let lowTempEl = document.createElement('div');
+    lowTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+    lowTempEl.innerHTML = `<img src="/assets/images/High-Temperature.png" alt="High temperature icon">${lowTemp}&#176C`;
+
+    //Gets wind speed with one decimal place.
+    let windSpeed = Math.round(weatherData.wind.speed * 10)/ 10;
+
+    //Create div element to display wind speed.
+    let windSpeedEl = document.createElement('div');
+    windSpeedEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+    windSpeedEl.innerHTML = `<img src="/assets/images/Wind.png" alt="Wind icon">${windSpeed * 3.6} km/h`;
+
+    //Create div element to display humidity.
+    let humidityEl = document.createElement('div');
+    humidityEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+    humidityEl.innerHTML = `<img src="/assets/images/Humidity.png" alt="Humidity icon">${weatherData.main.humidity}%`;
+
+    //Create div element to display sunrise time.
+    let sunriseEl = document.createElement('div');
+    sunriseEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+    sunriseEl.innerHTML = `<img src="/assets/images/Sunrise.png" alt="Sunrise icon">${dayjs(weatherData.sys.sunrise * 1000).format('hh:mm A')}`;
+
+    //Create div element to display sunset time.
+    let sunsetEl = document.createElement('div');
+    sunsetEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
+    sunsetEl.innerHTML = `<img src="/assets/images/Sunset.png" alt="Sunset icon">${dayjs(weatherData.sys.sunset * 1000).format('hh:mm A')}`;
+
+    otherWeatherEl.append(highTempEl, lowTempEl, windSpeedEl, humidityEl, sunriseEl, sunsetEl);
+
+    currCondEl.append(otherWeatherEl);
+}
+
 //Adds current weather icon and weather condition.
-function addCurrentWeatherConditionInformation(currentWeatherData, currCondEl){
+function addCurrentWeatherConditionInformation(weatherData, currCondEl){
 
     //Creates div element for current weather icon and description information.
     let currWeatherEl = document.createElement('div');
     currWeatherEl.className = flexColJustMiddleCl;
 
     //Gest URL for weather icon.
-    let iconURL = getIconURL(currentWeatherData.weather[0].icon);
+    let iconURL = getIconURL(weatherData.weather[0].icon);
 
     //Creates img element to display current weather icon.
     let currWeatherIconEL = document.createElement('img');
@@ -113,7 +165,7 @@ function addCurrentWeatherConditionInformation(currentWeatherData, currCondEl){
     currWeatherIconEL.alt = 'Current weather icon';
 
     //Gets current weather description with first letter capital in each word.
-    let currWeatherDesc = getWeatherDescription(currentWeatherData.weather[0].description);
+    let currWeatherDesc = getWeatherDescription(weatherData.weather[0].description);
 
     //Adds div element to display current weather description.
     let currWeatherDescEL = document.createElement('div');
@@ -143,14 +195,14 @@ function getIconURL(icon){
 }
 
 //Adds current temperature information.
-function addCurrentTemperatureInformation(currentWeatherData, currCondEl){
+function addCurrentTemperatureInformation(weatherData, currCondEl){
 
     //Creates div element for current temperature information.
     let currDataEl = document.createElement('div');
     currDataEl.className = currDataCl;
 
     //Gets current temperature with one decimal place.
-    let currentTemp = Math.round(currentWeatherData.main.temp * 10)/ 10;
+    let currentTemp = Math.round(weatherData.main.temp * 10)/ 10;
 
     //Create div element to display current temperature.
     let currTempEl = document.createElement('div');
@@ -158,7 +210,7 @@ function addCurrentTemperatureInformation(currentWeatherData, currCondEl){
     currTempEl.innerHTML = `<img src="/assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
 
     //Gets feel like temperature with one decimal place.
-    let feelsLike = Math.round(currentWeatherData.main.feels_like * 10)/ 10;
+    let feelsLike = Math.round(weatherData.main.feels_like * 10)/ 10;
 
      //Create div element to display feels like temperature.
     let feelsLikeEL = document.createElement('div');
