@@ -88,33 +88,58 @@ function addsCurrentWeatherInformation(currentWeatherData){
     //Adds current temperature information.
     addCurrentTemperatureInformation(currentWeatherData, currCondEl);
 
-    // //Updates current temperature value.
-    // let currentTempEL = document.getElementById(currentTempID);
-    // let currentTemp = Math.round(currentWeatherData.main.temp * 10)/ 10;
-    // currentTempEL.innerHTML = `<img src="/assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
+    //Adds current weather icon and weather condition.
+    addCurrentWeatherConditionInformation(currentWeatherData, currCondEl);
 
-    // //Updates feels like value.
-    // let feelsLikeEL = document.getElementById(feelsLikeID);
-    // let feelsLike = Math.round(currentWeatherData.main.feels_like * 10)/ 10;
-    // feelsLikeEL.innerHTML = `<img src="/assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
-
-    // //Gest URL for weather icon.
-    // let iconURL = getIconURL(currentWeatherData.weather[0].icon);
-
-    // //Updates current weather icon.
-    // let currWeatherIconEL = document.getElementById(currentWeatherIconID);
-    // currWeatherIconEL.src = iconURL;
-
-    // //Gets current weather description with first letter capital in each word.
-    // let currWeatherDesc = getWeatherDescription(currentWeatherData.weather[0].description);
-
-    // //Updates current weather description.
-    // let currWeatherDescEL = document.getElementById(currentWeatherDescID);
-    // currWeatherDescEL.innerHTML = currWeatherDesc;
-
-    // let currHighTempEL = document.getElementById(currentHighTempID);
+    
 
     presentDayContainer.append(currCondEl);
+}
+
+//Adds current weather icon and weather condition.
+function addCurrentWeatherConditionInformation(currentWeatherData, currCondEl){
+
+    //Creates div element for current weather icon and description information.
+    let currWeatherEl = document.createElement('div');
+    currWeatherEl.className = flexColJustMiddleCl;
+
+    //Gest URL for weather icon.
+    let iconURL = getIconURL(currentWeatherData.weather[0].icon);
+
+    //Creates img element to display current weather icon.
+    let currWeatherIconEL = document.createElement('img');
+    currWeatherIconEL.className = currWeatherIconCl;
+    currWeatherIconEL.src = iconURL;
+    currWeatherIconEL.alt = 'Current weather icon';
+
+    //Gets current weather description with first letter capital in each word.
+    let currWeatherDesc = getWeatherDescription(currentWeatherData.weather[0].description);
+
+    //Adds div element to display current weather description.
+    let currWeatherDescEL = document.createElement('div');
+    currWeatherDescEL.className = currWeatherDescCl;
+    currWeatherDescEL.innerHTML = currWeatherDesc;
+
+    currWeatherEl.append(currWeatherIconEL, currWeatherDescEL);
+
+    currCondEl.append(currWeatherEl);
+}
+
+//Gets current weather description with first letter capital in each word.
+function getWeatherDescription(description){
+
+    let descArray = description.split(' ');
+
+    for (let i = 0; i < descArray.length; i++) {
+        descArray[i] = descArray[i].charAt(0).toUpperCase() + descArray[i].substring(1);
+    }
+
+    return descArray.join(' ');
+}
+
+//Gest URL for weather icon.
+function getIconURL(icon){
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 }
 
 //Adds current temperature information.
