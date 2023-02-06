@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/reset.css">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js" integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="  crossorigin="anonymous"></script>
     <title>Weather Dashboard</title>
 </head>
 <body>
@@ -17,25 +18,26 @@
                     <button><img src="/assets/images/Search.png" alt="Search icon"></button>
                 </form>
 
-                <div id="favourite-city-container">
-                    <div class="favourite-city"><img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">Adelaide</div>
-                    <div class="favourite-city selected-city"><img class="location-tag" src="/assets/images/Location-Current.png" alt="Current location pin icon">Brisbane<img class="arrow" src="/assets/images/Arrow.png" alt="Arrow icon"></div>
-                    <div class="favourite-city last-city"><img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">Sydney</div>
-                </div>
+                <ul id="favourite-city-container" class="top-border">
+                    <li class="favourite-city"><img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">Adelaide</li>
+                    <li class="favourite-city selected-city"><img class="location-tag" src="/assets/images/Location-Current.png" alt="Current location pin icon">Brisbane<img class="arrow" src="/assets/images/Arrow.png" alt="Arrow icon"></li>
+                    <li class="favourite-city last-city"><img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon">Sydney</li>
+                </ul>
             </div>
 
             <div class="weather-data">
                 <div id="present-day">
-                    <h2 id="city-name" class="flex-row-justify-middle"><img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon"></h2>
-                    <div id="present-day-name" class="today">Friday- 03/02/2022</div>
+                    <!-- <h2 id="city-name" class="flex-row-justify-middle"><img class="location-tag" src="/assets/images/Location.png" alt="Location pin icon"></h2>
+                    <div id="present-day-name" class="today"></div>
+                    
                     <div class="current-condition flex-justify-middle">    
                         <div class="current-data">
-                            <div id="current-temperature" class="current-temp"><img src="/assets/images/Temperature.png" alt="Temperature icon">25.5&#176C</div>
-                            <div id="feels-like" class="feels-like flex-row-justify-middle"><img src="/assets/images/FeelsLike.png" alt="Feels like icon">26&#176C</div>
+                            <div id="current-temperature" class="current-temp"><img src="/assets/images/Temperature.png" alt="Temperature icon"></div>
+                            <div id="feels-like" class="feels-like flex-row-justify-middle"><img src="/assets/images/FeelsLike.png" alt="Feels like icon"></div>
                         </div>   
                         <div class="flex-column-justify-middle">
-                            <img id="current-weather-icon" class="current-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Current weather icon">
-                            <div id="current-weather-description" class="current-weather-description">Light Rain</div>
+                            <img id="current-weather-icon" class="current-weather-icon" src="" alt="Current weather icon">
+                            <div id="current-weather-description" class="current-weather-description"></div>
                         </div>
                         <div class="current-other-info">
                             <div id="current-high-temperature" class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="High temperature icon">24&#176C</div>
@@ -45,19 +47,18 @@
                             <div id="current-sunrise" class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Sunrise.png" alt="Sunrise icon">5am</div>
                             <div id="current-sunset" class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Sunset.png" alt="Sunset icon">6pm</div>
                         </div>
-                    </div>
-                    
+                    </div>                  -->
                 </div>
 
                 <div id="future-days">
-                    <div class="future-day">
+                    <!-- <div class="future-day">
                         <div class="day-value">
-                            <div class="day-date weekend">Suturday</div>
+                            <div class="day-date weekend">Saturday</div>
                             <div class="day-date weekend">04/02/2022</div>
                         </div>
                         <div class="day-data">
                             <div class="future-main-summary">
-                                <img class="future-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
+                                <img class="future-weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
                                 <div class="future-weather-description">Light Rain</div>
                             </div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="High temperature icon">25.5&#176C</div>
@@ -76,8 +77,8 @@
                         </div>
                         <div class="day-data">
                             <div class="future-main-summary">
-                                <img class="future-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
-                                <div class="future-weather-description">Light Rain</div>
+                                <img class="future-weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
+                                <div class="future-weather-description">Overcast Clouds</div>
                             </div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="High temperature icon">26&#176C</div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Low-Temperature.png" alt="Low temperature icon">25&#176C</div>
@@ -95,7 +96,7 @@
                         </div>
                         <div class="day-data">
                             <div class="future-main-summary">
-                                <img class="future-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
+                                <img class="future-weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
                                 <div class="future-weather-description">Light Rain</div>
                             </div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="High temperature icon">25&#176C</div>
@@ -114,7 +115,7 @@
                         </div>
                         <div class="day-data">
                             <div class="future-main-summary">
-                                <img class="future-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
+                                <img class="future-weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
                                 <div class="future-weather-description">Light Rain</div>
                             </div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="High temperature icon">24&#176C</div>
@@ -133,7 +134,7 @@
                         </div>
                         <div class="day-data">
                             <div class="future-main-summary">
-                                <img class="future-weather-image" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
+                                <img class="future-weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="Weather icon">
                                 <div class="future-weather-description">Light Rain</div>
                             </div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/High-Temperature.png" alt="High temperature icon">24&#176C</div>
@@ -143,7 +144,7 @@
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Sunrise.png" alt="Sunrise icon">5am</div>
                             <div class="line-height-2rem flex-row-justify-middle"><img src="/assets/images/Sunset.png" alt="Sunset icon">6pm</div>       
                         </div>        
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
