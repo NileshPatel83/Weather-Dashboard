@@ -56,6 +56,16 @@ async function init(){
     //Gets lat and lon of Sydney, if fails to get user location.
     let cityLocation= getCurrentLocationData();
     if(cityLocation.lat === 0 && cityLocation.lon === 0) return;
+    
+    //Adds current weather information.
+    addsCurrentWeatherInformation(cityLocation, h2El);
+
+    // //Adds 5 day forecast information.
+    // addForecastWeatherInformation(cityLocation);
+}
+
+//Updates current weather information in browser.
+async function addsCurrentWeatherInformation(cityLocation, h2El){
 
     //Gets the city name from lat and lon.
     let cityName = await getCityName(cityLocation);
@@ -63,22 +73,12 @@ async function init(){
 
     //Gets current weather information.
     let currentWeatherData = await getCurrentWeatherData(cityLocation);
-    console.log(currentWeatherData);
 
     //Removes temporary loading text once weather data is obtained.
     h2El.remove();
 
     //Adds city name, current day and date information.
     addLocationInformation(cityName);
-    
-    //Adds current weather information.
-    addsCurrentWeatherInformation(currentWeatherData);
-
-    //Adds 5 day forecast information.
-}
-
-//Updates current weather information in browser.
-function addsCurrentWeatherInformation(currentWeatherData){
 
     //Creates div container that holds all weather data.
     let currCondEl = document.createElement('div');
@@ -109,7 +109,7 @@ function addOtherWeatherInformation(weatherData, currCondEl){
     //Create div element to display high temperature.
     let highTempEl = document.createElement('div');
     highTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    highTempEl.innerHTML = `<img src="../assets/images/High-Temperature.png" alt="High temperature icon">${highTemp}&#176C`;
+    highTempEl.innerHTML = `<img src="assets/images/High-Temperature.png" alt="High temperature icon">${highTemp}&#176C`;
 
     //Gets low temperature with one decimal place.
     let lowTemp = Math.round(weatherData.main.temp_min * 10)/ 10;
@@ -117,7 +117,7 @@ function addOtherWeatherInformation(weatherData, currCondEl){
     //Create div element to display low temperature.
     let lowTempEl = document.createElement('div');
     lowTempEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    lowTempEl.innerHTML = `<img src="../assets/images/Low-Temperature.png" alt="Low temperature icon">${lowTemp}&#176C`;
+    lowTempEl.innerHTML = `<img src="assets/images/Low-Temperature.png" alt="Low temperature icon">${lowTemp}&#176C`;
 
     //Gets wind speed with one decimal place.
     let windSpeed = Math.round(weatherData.wind.speed * 10)/ 10;
@@ -125,22 +125,22 @@ function addOtherWeatherInformation(weatherData, currCondEl){
     //Create div element to display wind speed.
     let windSpeedEl = document.createElement('div');
     windSpeedEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    windSpeedEl.innerHTML = `<img src="../assets/images/Wind.png" alt="Wind icon">${windSpeed * 3.6} km/h`;
+    windSpeedEl.innerHTML = `<img src="assets/images/Wind.png" alt="Wind icon">${windSpeed * 3.6} km/h`;
 
     //Create div element to display humidity.
     let humidityEl = document.createElement('div');
     humidityEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    humidityEl.innerHTML = `<img src="../assets/images/Humidity.png" alt="Humidity icon">${weatherData.main.humidity}%`;
+    humidityEl.innerHTML = `<img src="assets/images/Humidity.png" alt="Humidity icon">${weatherData.main.humidity}%`;
 
     //Create div element to display sunrise time.
     let sunriseEl = document.createElement('div');
     sunriseEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    sunriseEl.innerHTML = `<img src="../assets/images/Sunrise.png" alt="Sunrise icon">${dayjs(weatherData.sys.sunrise * 1000).format('hh:mm A')}`;
+    sunriseEl.innerHTML = `<img src="assets/images/Sunrise.png" alt="Sunrise icon">${dayjs(weatherData.sys.sunrise * 1000).format('hh:mm A')}`;
 
     //Create div element to display sunset time.
     let sunsetEl = document.createElement('div');
     sunsetEl.className = `${lineHgt2remCl} ${flexRowJustMiddleCl}`;
-    sunsetEl.innerHTML = `<img src="../assets/images/Sunset.png" alt="Sunset icon">${dayjs(weatherData.sys.sunset * 1000).format('hh:mm A')}`;
+    sunsetEl.innerHTML = `<img src="assets/images/Sunset.png" alt="Sunset icon">${dayjs(weatherData.sys.sunset * 1000).format('hh:mm A')}`;
 
     otherWeatherEl.append(highTempEl, lowTempEl, windSpeedEl, humidityEl, sunriseEl, sunsetEl);
 
@@ -206,7 +206,7 @@ function addCurrentTemperatureInformation(weatherData, currCondEl){
     //Create div element to display current temperature.
     let currTempEl = document.createElement('div');
     currTempEl.className = currTempCl;
-    currTempEl.innerHTML = `<img src="../assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
+    currTempEl.innerHTML = `<img src="assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
 
     //Gets feel like temperature with one decimal place.
     let feelsLike = Math.round(weatherData.main.feels_like * 10)/ 10;
@@ -214,7 +214,7 @@ function addCurrentTemperatureInformation(weatherData, currCondEl){
      //Create div element to display feels like temperature.
     let feelsLikeEL = document.createElement('div');
     feelsLikeEL.className = `${feelLikeCl} ${flexRowJustMiddleCl}`
-    feelsLikeEL.innerHTML = `<img src="../assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
+    feelsLikeEL.innerHTML = `<img src="assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
 
     currDataEl.append(currTempEl, feelsLikeEL);
 
@@ -250,7 +250,7 @@ function addCityName(cityName){
     let cityNameEl = document.createElement('h2');
     //cityNameEl.id = cityNameID;
     cityNameEl.className = flexRowJustMiddleCl;
-    cityNameEl.innerHTML = `<img class="location-tag" src="../assets/images/Location.png" alt="Location pin icon">${cityName}`;
+    cityNameEl.innerHTML = `<img class="location-tag" src="assets/images/Location.png" alt="Location pin icon">${cityName}`;
     presentDayContainer.append(cityNameEl);
 }
 
