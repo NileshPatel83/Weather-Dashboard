@@ -8,6 +8,16 @@ const apiKey = '54235d685be1b7eea306dd40934a9322';
 
 const cityNameID = 'city-name';
 const presentDayID = 'present-day-name';
+const currentTempID = 'current-temperature';
+const feelsLikeID = 'feels-like';
+const currentWeatherIconID = 'current-weather-icon';
+const currentWeatherDescID = 'current-weather-description';
+const curentHighTempID = 'current-high-temperature';
+const currentLowTempID = 'current-low-temperature';
+const currentWindID = 'current-wind';
+const currentHumidityID = 'current-humidity';
+const currentSunriseID = 'current-sunrise';
+const currentSunsetID = 'current-sunset';
     
 const options = {
     enableHighAccuracy: true,
@@ -36,6 +46,7 @@ async function init(){
 
     //Gets current weather information.
     let currentWeatherData = await getCurrentWeatherData(cityLocation);
+    console.log(currentWeatherData);
     
     //Updates current weather information in browser.
     updateCurrentWeatherInformation(currentWeatherData);
@@ -43,7 +54,37 @@ async function init(){
 
 //Updates current weather information in browser.
 function updateCurrentWeatherInformation(currentWeatherData){
-    
+
+    //Updates current temperature value.
+    let currentTempEL = document.getElementById(currentTempID);
+    let currentTemp = Math.round(currentWeatherData.main.temp * 10)/ 10;
+    currentTempEL.innerHTML = `<img src="/assets/images/Temperature.png" alt="Temperature icon">${currentTemp}&#176C`;
+
+    //Updates feels like value.
+    let feelsLikeEL = document.getElementById(feelsLikeID);
+    let feelsLike = Math.round(currentWeatherData.main.feels_like * 10)/ 10;
+    feelsLikeEL.innerHTML = `<img src="/assets/images/FeelsLike.png" alt="Feels like icon">${feelsLike}&#176C`;
+
+    //Updates current weather icon.
+
+    //Updates current weather description.
+    let currWeatherDescEL = document.getElementById(currentWeatherDescID);
+
+    //Gets current weather description with first letter capital in each word.
+    let currWeatherDesc = getWeatherDescription(currentWeatherData.weather[0].description);
+    currWeatherDescEL.innerHTML = currWeatherDesc;
+}
+
+//Gets current weather description with first letter capital in each word.
+function getWeatherDescription(description){
+
+    let descArray = description.split(' ');
+
+    for (let i = 0; i < descArray.length; i++) {
+        descArray[i] = descArray[i].charAt(0).toUpperCase() + descArray[i].substring(1);
+    }
+
+    return descArray.join(' ');
 }
 
 //Gets current weather information.
