@@ -29,6 +29,9 @@ const dayDataCl = 'day-data';
 const futMainSummCl = 'future-main-summary';
 const futWeatherIconCl = 'future-weather-icon';
 const futWeatherDescCl = 'future-weather-description';
+const topBorderCl = 'top-border';
+const favCityCl = 'favourite-city';
+const selCityCl = 'selected-city';
 
 //DOM Elements
 const presentDayContainer = document.getElementById('present-day');
@@ -36,20 +39,30 @@ const futureDaysContainer = document.getElementById('future-days');
 const forecastTextEl= document.getElementById('forecast-text');
 const searchBtnEl = document.getElementById('search-button');
 const cityNameTextboxEl = document.getElementById('city-name-textbox');
+const cityListEl = document.getElementById('favourite-city-container');
 
 init();
 
 searchBtnEl.addEventListener('click', processSearchCityWeatherData);
 
-async function processSearchCityWeatherData(event){
+cityListEl.addEventListener('click', updateSelectedCity);
+
+async function updateSelectedCity(event){
 
     event.preventDefault();
 
-    let cityName = cityNameTextboxEl.value;
-    if(cityName.trim() === '') return;
+    let cityNameEl = event.target;
 
-    //Makes the first letter upper case.
-    cityName = cityName.charAt(0).toUpperCase() + cityName.substring(1);
+    if(cityNameEl.nodeName.toLowerCase() !== 'li') return;
+
+    //Gets the selected city name.
+    let selCityname = cityNameEl.textContent;
+    
+    //Removes existing selected city.
+    removeExistingSelectedCity();
+
+    //Adds selected city class name.
+    addSelectedCityClassName(cityNameEl);
 
     //Removes existing current and future weather data.
     removeExistingWeatherData();
@@ -60,6 +73,92 @@ async function processSearchCityWeatherData(event){
     //Hides forecast text.
     forecastTextEl.style.visibility = 'hidden';
 
+    let cityLocation = await getCityCoordinates(selCityname);
+
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) {
+        h2El.innerHTML = `Failed to get cordinates of '${selCityname}'.`;
+        return;
+    }
+
+     //Adds current weather information.
+     addCurrentWeatherInformation(cityLocation, h2El, selCityname);
+
+     //Adds 5 day forecast information.
+     addForecastWeatherInformation(cityLocation);
+
+     //Updates favourite cities list.
+     updateFavouriteCities(selCityname);
+}
+
+//Adds selected city class name and arrow
+function addSelectedCityClassName(cityNameEl){
+
+    //Gets the city name.
+    let selCityname = cityNameEl.textContent;
+
+    //Gets existing class names.
+    let className = cityNameEl.className;
+
+    //Adds selected city class name.
+    className = `${className} ${selCityCl}`;
+
+    //Resets the class name of selected city element.
+    cityNameEl.className = className
+
+    //Resets inner HTML by adding arrow image after city name.
+    cityNameEl.innerHTML = `<img class="location-tag" src="assets/images/Location-Current.png" alt="Current location pin icon">${selCityname}<img class="arrow" src="assets/images/Arrow.png" alt="Arrow icon">`;
+}
+
+//Removes existing selected city.
+function removeExistingSelectedCity(){
+
+    //Gets existing city name child emelemts and removes the selected city class.
+    let cityNameChildren = cityListEl.children;
+    if(cityNameChildren.length === 0) return;
+
+    let cityList = Array.from(cityNameChildren);
+
+    cityList.forEach(cityNameEl => {
+        let className = cityNameEl.className;
+        className = className.replace(selCityCl, '');
+        cityNameEl.className = className.trim();
+
+        //Gets the city name and updates the inner HTML.
+        //This is to remove arrow after city name.
+        let cityname = cityNameEl.textContent;
+        cityNameEl.innerHTML = `<img class="location-tag" src="assets/images/Location.png" alt="Location pin icon">${cityname}`;
+    });
+}
+
+async function processSearchCityWeatherData(event){
+
+    event.preventDefault();
+
+    //Gets the city name.
+    let cityName = cityNameTextboxEl.value;
+
+    //Resets the textbox value to empty string.
+    cityNameTextboxEl.value = '';
+
+    //Exist the function if city name is empty.
+    if(cityName.trim() === '') return;
+
+    //Capitalizes first letter in each word.
+    cityName = capitalizeWords(cityName);
+
+    //Removes existing selected city.
+    removeExistingSelectedCity();
+
+    //Removes existing current and future weather data.
+    removeExistingWeatherData();
+
+    //Adds temporary loading text while weather data is obtained.
+    let h2El = addTemporaryLoadingText();
+
+    //Hides forecast text.
+    forecastTextEl.style.visibility = 'hidden';
+
+    //Gets the city coordinates.
     let cityLocation = await getCityCoordinates(cityName);
 
     if(cityLocation.lat === 0 && cityLocation.lon === 0) {
@@ -68,10 +167,93 @@ async function processSearchCityWeatherData(event){
     }
 
      //Adds current weather information.
-     addCurrentWeatherInformation(cityLocation, h2El);
+     addCurrentWeatherInformation(cityLocation, h2El, cityName);
 
      //Adds 5 day forecast information.
      addForecastWeatherInformation(cityLocation);
+
+     //Updates favourite cities list.
+     updateFavouriteCities(cityName);
+}
+
+//Capitalizes first letter in each word.
+function capitalizeWords(cityName){
+    let wordArray = cityName.split(' ');
+
+    for (let i = 0; i < wordArray.length; i++) {
+
+        //Makes the first letter upper case.
+        wordArray[i] = wordArray[i].charAt(0).toUpperCase() + wordArray[i].substring(1);
+    }
+
+    return wordArray.join(' ');
+}
+
+//Updates favourite cities list.
+function updateFavouriteCities(cityName){
+
+    //Gets the current local storage (list of favourite cities).
+    let storage = getLocalStorage();
+
+    //Sets the storage to empty array if returns null.
+    if(storage === null) storage = [];
+    
+    //Only adds the city name to list, if doesn;t exist already.
+    if (!storage.includes(cityName)){
+        storage.push(cityName);
+    }
+
+    //Updates the local storage.
+    addUpdateLocalStorage(storage.sort());
+
+    //Updates favourite city list.
+    updateFavouriteCityList(cityName);
+}
+
+//Updates favourite city list.
+function updateFavouriteCityList(searchCityName){
+
+    //Gets the current local storage (list of favourite cities).
+    let storage = getLocalStorage();
+    if(storage === null) return;
+
+    //Removes existing city names from the list.
+    removeExistingCityNames();
+
+    //Loops through each city name and list element to ul element.
+    storage.forEach(cityName => {
+        
+        let cityNameEl = document.createElement('li');
+        
+
+        if(cityName === searchCityName){
+            cityNameEl.className = `${favCityCl} ${selCityCl}`;
+            cityNameEl.innerHTML = `<img class="location-tag" src="assets/images/Location-Current.png" alt="Current location pin icon">${cityName}<img class="arrow" src="assets/images/Arrow.png" alt="Arrow icon">`;
+        } else {
+
+            cityNameEl.className = favCityCl;
+            cityNameEl.innerHTML = `<img class="location-tag" src="assets/images/Location.png" alt="Location pin icon">${cityName}`;
+        }
+
+        cityListEl.append(cityNameEl);
+    });
+
+    cityListEl.className = topBorderCl;
+}
+
+//Removes existing city names from the list.
+function removeExistingCityNames(){
+
+    //Gets existing city name child emelemts and removes them.
+    let cityNameChildren = cityListEl.children;
+    if(cityNameChildren.length === 0) return;
+
+    let cityList = Array.from(cityNameChildren);
+
+    cityList.forEach(cityName => cityName.remove());
+
+    //Removes class names.
+    cityListEl.className = '';
 }
 
 //Removes existing current and future weather data.
@@ -109,12 +291,19 @@ async function init(){
         h2El.innerHTML = `Failed to get cordinates of current location.`;
         return;
     }
+
+    //Gets the city name from lat and lon.
+    let cityName = await getCityName(cityLocation);
+    if(cityName === '') return;
     
     //Adds current weather information.
-    addCurrentWeatherInformation(cityLocation, h2El);
+    addCurrentWeatherInformation(cityLocation, h2El, cityName);
 
     //Adds 5 day forecast information.
     addForecastWeatherInformation(cityLocation);
+
+    //Updates favourite cities list.
+    updateFavouriteCities(cityName);
 }
 
 //Adds 5 day forecast information.
@@ -262,11 +451,7 @@ async function getForecastWeatherData(cityLocation){
 }
 
 //Updates current weather information in browser.
-async function addCurrentWeatherInformation(cityLocation, h2El){
-
-    //Gets the city name from lat and lon.
-    let cityName = await getCityName(cityLocation);
-    if(cityName === '') return;
+async function addCurrentWeatherInformation(cityLocation, h2El, cityName){
 
     //Gets current weather information.
     let currentWeatherData = await getCurrentWeatherData(cityLocation);
