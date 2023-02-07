@@ -34,6 +34,8 @@ const futWeatherDescCl = 'future-weather-description';
 const presentDayContainer = document.getElementById('present-day');
 const futureDaysContainer = document.getElementById('future-days');
 const forecastTextEl= document.getElementById('forecast-text');
+const searchBtnEl = document.getElementById('search-button');
+const cityNameTextboxEl = document.getElementById('city-name-textbox');
     
 const options = {
     enableHighAccuracy: true,
@@ -42,6 +44,13 @@ const options = {
 };
 
 init();
+
+searchBtnEl.addEventListener('click', processSearchCityWeatherData);
+
+function processSearchCityWeatherData(){
+
+    let cityName = cityNameTextboxEl.value;
+}
 
 async function init(){
 
@@ -498,7 +507,7 @@ async function success(pos) {
     const crd = pos.coords;
 
     //Tries to get user location data.
-    //If fails, gets lat an lon for Sydney.
+    //If fails, gets lat and lon for Sydney.
     if(crd.latitude === 0 && crd.longitude === 0){
 
         cityLocation = await getDefaultCityLocation();
@@ -512,10 +521,19 @@ async function success(pos) {
        
     }
 
-    let storage = {
-        curLocation: cityLocation,
-        cityNames:[]
-    };
+    //Ges the local storage.
+    let storage = getLocalStorage();
+
+    //If the storage if found, updates current city location.
+    //Otherwise creates a new storage with current city location and empty search city name array.
+    if(storage !== null){
+        storage.curLocation = cityLocation;
+    } else {
+        storage = {
+            curLocation: cityLocation,
+            cityNames:[]
+        };
+    }
 
     //Updates local storage with city lat and lon.
     addUpdateLocalStorage(storage);
