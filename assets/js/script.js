@@ -34,14 +34,65 @@ const futWeatherDescCl = 'future-weather-description';
 const presentDayContainer = document.getElementById('present-day');
 const futureDaysContainer = document.getElementById('future-days');
 const forecastTextEl= document.getElementById('forecast-text');
-    
-const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0
-};
+const searchBtnEl = document.getElementById('search-button');
+const cityNameTextboxEl = document.getElementById('city-name-textbox');
 
 init();
+
+searchBtnEl.addEventListener('click', processSearchCityWeatherData);
+
+async function processSearchCityWeatherData(event){
+
+    event.preventDefault();
+
+    let cityName = cityNameTextboxEl.value;
+    if(cityName.trim() === '') return;
+
+    //Makes the first letter upper case.
+    cityName = cityName.charAt(0).toUpperCase() + cityName.substring(1);
+
+    //Removes existing current and future weather data.
+    removeExistingWeatherData();
+
+    //Adds temporary loading text while weather data is obtained.
+    let h2El = addTemporaryLoadingText();
+
+    //Hides forecast text.
+    forecastTextEl.style.visibility = 'hidden';
+
+    let cityLocation = await getCityCoordinates(cityName);
+
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) {
+        h2El.innerHTML = `Failed to get cordinates of '${cityName}'.`;
+        return;
+    }
+
+     //Adds current weather information.
+     addCurrentWeatherInformation(cityLocation, h2El);
+
+     //Adds 5 day forecast information.
+     addForecastWeatherInformation(cityLocation);
+}
+
+//Removes existing current and future weather data.
+function removeExistingWeatherData(){
+
+    //Gets child elements from present day div element and removes them. 
+    let currWeatherChildren = presentDayContainer.children;
+    if(currWeatherChildren.length > 0){
+        let currWeatherChildrenArray = Array.from(currWeatherChildren);
+
+        currWeatherChildrenArray.forEach(currWeatherChild => currWeatherChild.remove());
+    }
+
+    //Gets child elements from future days div element and removes them. 
+    let futWeatherChildren = futureDaysContainer.children;
+    if(futWeatherChildren.length > 0){
+        let futWeatherChildrenArray = Array.from(futWeatherChildren);
+
+        futWeatherChildrenArray.forEach(futWeatherChild => futWeatherChild.remove());
+    }
+}
 
 async function init(){
 
@@ -53,8 +104,11 @@ async function init(){
 
     //Gets lat and lon of user location.
     //Gets lat and lon of Sydney, if fails to get user location.
-    let cityLocation= getCurrentLocationData();
-    if(cityLocation.lat === 0 && cityLocation.lon === 0) return;
+    let cityLocation= await getCurrentLocationData();
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) {
+        h2El.innerHTML = `Failed to get cordinates of current location.`;
+        return;
+    }
     
     //Adds current weather information.
     addCurrentWeatherInformation(cityLocation, h2El);
@@ -72,15 +126,46 @@ async function addForecastWeatherInformation(cityLocation){
         return;
     }
 
-    console.log(weatherData);
-
-    //Filters one forecast for each day.
-    let forecastWeather = weatherData.list.filter(dayForecast => dayForecast.dt_txt.indexOf('15:00:00') !== -1);
+    //Gets 5 day forecast weather.
+    let forecastWeather = getFiveDayForecastWeatherData(weatherData);
+    if(forecastWeather.length === 0) return;
 
     //Adds weather forecast for each day.
     for (let i = 0; i < forecastWeather.length; i++) {
         addForecastDayWeatherInformation(forecastWeather[i])
     }
+}
+
+//Gets 5 day forecast weather.
+function getFiveDayForecastWeatherData(weatherData){
+
+    let forecastWeather = [];
+
+    const today = dayjs().format('DD/MM/YYYY');
+
+    //Loops through all forecast weather data.
+    //Weather data contains multiple entries for same day.
+    for (let i = 0; i < weatherData.list.length; i++) {
+
+        const data = weatherData.list[i];
+        
+        //Gets weather data date in local time.
+        let dataDate = dayjs(data.dt * 1000).format('DD/MM/YYYY');
+
+        //Only processes the weather data if it is not today and future data.
+        if(today !== dataDate){
+
+            //Checks whether the future date is already added to the list or not.
+            //Only adds the data to the list if the data for the same day is not added already.
+            let dateAdded = forecastWeather.filter(dayForecast => dayjs(dayForecast.dt * 1000).format('DD/MM/YYYY') === dataDate);
+
+            if(dateAdded.length === 0){
+                forecastWeather.push(data);
+            }
+        }
+    }
+
+    return forecastWeather;
 }
 
 //Adds weather forecast for each day.
@@ -171,7 +256,7 @@ async function getForecastWeatherData(cityLocation){
 
     let url = `${reqForecastWeatherURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&appid=${apiKey}&units=metric`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
@@ -186,7 +271,7 @@ async function addCurrentWeatherInformation(cityLocation, h2El){
     //Gets current weather information.
     let currentWeatherData = await getCurrentWeatherData(cityLocation);
     if(typeof(currentWeatherData) === 'undefined'){
-        h2El.innerHTML= `Failed to get weather data for ${cityName}`;
+        h2El.innerHTML= `Failed to get weather data for '${cityName}'`;
         return;
     }
 
@@ -401,7 +486,7 @@ async function getCurrentWeatherData(cityLocation){
 
     let url = `${reqCurrentWeatherURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&units=metric&appid=${apiKey}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
@@ -411,9 +496,9 @@ async function getCityName(cityLocation){
 
     //Gets the city name from lat and lon using API.
     let cityData = await getCityNameFromAPI(cityLocation);
-    if(typeof(cityData) === 'undefined') return '';
+    if(cityData.length === 0) return '';
 
-    //Returns thecity name from response ontained from API.
+    //Returns the city name from response obtained from API.
     return cityData[0].name;
 }
 
@@ -423,32 +508,35 @@ async function getCityNameFromAPI(cityLocation){
     //Creates a URL to fetch city name data.
     let url = `${reqCityNameURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&limit=1&appid=${apiKey}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
 
 //Gets lat and lon of user location.
 //Gets lat and lon of Sydney, if fails to get user location.
-function getCurrentLocationData(){
+async function getCurrentLocationData(){
 
     let cityLocation = {
         lat: 0,
         lon: 0
     };
 
-    //Tries to get the user location.
-    //If fails, gets lat an lon for Sydney and
-    //Stores into location storage.
-    navigator.geolocation.getCurrentPosition(success, error, options);
+    //Tries to get user location data.
+    let position = await getCurrentLongAndLat().catch(() => {});
 
-    //Ges the local storage.
-    let storage = getLocalStorage();
-    if(storage !== null){
+    //If fails, gets lat and lon for Sydney.
+    //if(position.coords.latitude === 0 && position.coords.longitude === 0){
+    if(typeof(position) === 'undefined'){
+
+        cityLocation = await getCityCoordinates(defaultCityName);
+
+    //If successfully gets user's location, gets lat and lon.
+    } else {
 
         cityLocation = {
-            lat: storage.curLocation.lat,
-            lon: storage.curLocation.lon
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
         };
     }
 
@@ -456,52 +544,23 @@ function getCurrentLocationData(){
     return cityLocation;
 }
 
-//Gets the city lat and lon.
-async function success(pos) {
-
-    let cityLocation = {
-        lat: 0,
-        lon: 0
-    };
-
-    const crd = pos.coords;
-
-    //Tries to get user location data.
-    //If fails, gets lat an lon for Sydney.
-    if(crd.latitude === 0 && crd.longitude === 0){
-
-        cityLocation = await getDefaultCityLocation();
-
-    } else {
-
-        cityLocation = {
-            lat: crd.latitude,
-            lon: crd.longitude
-        };
-       
-    }
-
-    let storage = {
-        curLocation: cityLocation,
-        cityNames:[]
-    };
-
-    //Updates local storage with city lat and lon.
-    addUpdateLocalStorage(storage);
+//Tries to get user location data by creating new promise.
+function getCurrentLongAndLat() {
+    return new Promise((success, error) => navigator.geolocation.getCurrentPosition(success, error));
 }
 
 //Gets lat an lon for Sydney.
-async function getDefaultCityLocation(){
+async function getCityCoordinates(citName){
 
     let cityLocation = {
         lat: 0,
         lon: 0
     };
 
-    //Gets lat an lon for Sydney using API.
-    let defaultCityLocation = await getLocationDataByCityName(defaultCityName);
+    //Gets lat an lon for specified city using API.
+    let defaultCityLocation = await getLocationDataByCityName(citName);
 
-    if(typeof(defaultCityLocation) !== 'undefined'){
+    if(defaultCityLocation.length > 0){
         cityLocation.lat =  defaultCityLocation[0].lat,
         cityLocation.lon = defaultCityLocation[0].lon
     }
@@ -509,12 +568,12 @@ async function getDefaultCityLocation(){
     return cityLocation;
 }
 
-//Gets lat an lon for Sydney using API.
+//Gets lat an lon for specified city using API.
 async function getLocationDataByCityName(cityName){
 
     let url = `${reqCityDataURL}${cityName}&limit=1&appid=${apiKey}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
@@ -534,11 +593,6 @@ function getLocalStorage(){
     }
 
     return JSON.parse(storage);
-}
-
-//Logs the error in consol log.
-function error(err) {
-    //console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
 //Adds temporary loading text while weather data is obtained.
