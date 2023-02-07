@@ -72,6 +72,29 @@ async function processSearchCityWeatherData(event){
 
      //Adds 5 day forecast information.
      addForecastWeatherInformation(cityLocation);
+
+     //Updates favourite cities list.
+     updateFavouriteCities(cityName);
+}
+
+//Updates favourite cities list.
+function updateFavouriteCities(cityName){
+
+    //Gets the current local storage (list of favourite cities).
+    let storage = getLocalStorage();
+
+    //Sets the storage to empty array if returns null.
+    if(storage === null) storage = [];
+    
+    //Only adds the city name to list, if doesn;t exist already.
+    if (!storage.includes(cityName)){
+        storage.push(cityName);
+    }
+
+    //Updates the local storage.
+    addUpdateLocalStorage(storage.sort());
+
+
 }
 
 //Removes existing current and future weather data.
