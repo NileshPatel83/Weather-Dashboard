@@ -143,8 +143,8 @@ async function processSearchCityWeatherData(event){
     //Exist the function if city name is empty.
     if(cityName.trim() === '') return;
 
-    //Makes the first letter upper case.
-    cityName = cityName.charAt(0).toUpperCase() + cityName.substring(1);
+    //Capitalizes first letter in each word.
+    cityName = capitalizeWords(cityName);
 
     //Removes existing selected city.
     removeExistingSelectedCity();
@@ -158,6 +158,7 @@ async function processSearchCityWeatherData(event){
     //Hides forecast text.
     forecastTextEl.style.visibility = 'hidden';
 
+    //Gets the city coordinates.
     let cityLocation = await getCityCoordinates(cityName);
 
     if(cityLocation.lat === 0 && cityLocation.lon === 0) {
@@ -173,6 +174,19 @@ async function processSearchCityWeatherData(event){
 
      //Updates favourite cities list.
      updateFavouriteCities(cityName);
+}
+
+//Capitalizes first letter in each word.
+function capitalizeWords(cityName){
+    let wordArray = cityName.split(' ');
+
+    for (let i = 0; i < wordArray.length; i++) {
+
+        //Makes the first letter upper case.
+        wordArray[i] = wordArray[i].charAt(0).toUpperCase() + wordArray[i].substring(1);
+    }
+
+    return wordArray.join(' ');
 }
 
 //Updates favourite cities list.
@@ -288,8 +302,8 @@ async function init(){
     //Adds 5 day forecast information.
     addForecastWeatherInformation(cityLocation);
 
-    //Updates favourite city list.
-    updateFavouriteCityList(cityName);
+    //Updates favourite cities list.
+    updateFavouriteCities(cityName);
 }
 
 //Adds 5 day forecast information.
