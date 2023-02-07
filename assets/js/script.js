@@ -37,21 +37,65 @@ const forecastTextEl= document.getElementById('forecast-text');
 const searchBtnEl = document.getElementById('search-button');
 const cityNameTextboxEl = document.getElementById('city-name-textbox');
 
-let h2El;
-
 init();
 
 searchBtnEl.addEventListener('click', processSearchCityWeatherData);
 
-function processSearchCityWeatherData(){
+async function processSearchCityWeatherData(event){
+
+    event.preventDefault();
 
     let cityName = cityNameTextboxEl.value;
+    if(cityName.trim() === '') return;
+
+    //Removes existing current and future weather data.
+    removeExistingWeatherData();
+
+    //Adds temporary loading text while weather data is obtained.
+    let h2El = addTemporaryLoadingText();
+
+    //Hides forecast text.
+    forecastTextEl.style.visibility = 'hidden';
+
+    let cityLocation = await getCityCoordinates(cityName);
+
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) {
+        h2El.innerHTML = `Failed to get cordinates of current location.`;
+        return;
+    }
+
+     //Adds current weather information.
+     addCurrentWeatherInformation(cityLocation, h2El);
+
+     //Adds 5 day forecast information.
+     addForecastWeatherInformation(cityLocation);
+}
+
+//Removes existing current and future weather data.
+function removeExistingWeatherData(){
+
+    //Gets child elements from present day div element and removes them. 
+    let currWeatherChildren = presentDayContainer.children;
+    if(currWeatherChildren.length > 0){
+        let currWeatherChildrenArray = Array.from(currWeatherChildren);
+
+        currWeatherChildrenArray.forEach(currWeatherChild => currWeatherChild.remove());
+    }
+
+    //Gets child elements from future days div element and removes them. 
+    let futWeatherChildren = futureDaysContainer.children;
+    if(futWeatherChildren.length > 0){
+        let futWeatherChildrenArray = Array.from(futWeatherChildren);
+
+        futWeatherChildrenArray.forEach(futWeatherChild => futWeatherChild.remove());
+    }
 }
 
 async function init(){
 
+
     //Adds temporary loading text while weather data is obtained.
-    h2El = addTemporaryLoadingText();
+    let h2El = addTemporaryLoadingText();
 
     //Hides forecast text.
     forecastTextEl.style.visibility = 'hidden';
@@ -511,7 +555,7 @@ async function getCityCoordinates(citName){
         lon: 0
     };
 
-    //Gets lat an lon for Sydney using API.
+    //Gets lat an lon for specified city using API.
     let defaultCityLocation = await getLocationDataByCityName(citName);
 
     if(typeof(defaultCityLocation) !== 'undefined'){
@@ -522,10 +566,10 @@ async function getCityCoordinates(citName){
     return cityLocation;
 }
 
-//Gets lat an lon for Sydney using API.
+//Gets lat an lon for specified city using API.
 async function getLocationDataByCityName(cityName){
 
-    let url = `${reqCityDataURL}${cityName}&limit=1&appid=${apiKey}`;
+    let url = `${reqCityDataURL}${cityName}&limit=5&appid=${apiKey}`;
 
     const response = await fetch(url);
 
