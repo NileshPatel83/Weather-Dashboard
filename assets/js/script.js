@@ -36,12 +36,8 @@ const futureDaysContainer = document.getElementById('future-days');
 const forecastTextEl= document.getElementById('forecast-text');
 const searchBtnEl = document.getElementById('search-button');
 const cityNameTextboxEl = document.getElementById('city-name-textbox');
-    
-const options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0
-};
+
+let h2El;
 
 init();
 
@@ -55,15 +51,18 @@ function processSearchCityWeatherData(){
 async function init(){
 
     //Adds temporary loading text while weather data is obtained.
-    let h2El = addTemporaryLoadingText();
+    h2El = addTemporaryLoadingText();
 
     //Hides forecast text.
     forecastTextEl.style.visibility = 'hidden';
 
     //Gets lat and lon of user location.
     //Gets lat and lon of Sydney, if fails to get user location.
-    let cityLocation= getCurrentLocationData();
-    if(cityLocation.lat === 0 && cityLocation.lon === 0) return;
+    let cityLocation= await getCurrentLocationData();
+    if(cityLocation.lat === 0 && cityLocation.lon === 0) {
+        h2El.innerHTML = `Failed to get cordinates of current location.`;
+        return;
+    }
     
     //Adds current weather information.
     addCurrentWeatherInformation(cityLocation, h2El);
@@ -470,25 +469,28 @@ async function getCityNameFromAPI(cityLocation){
 
 //Gets lat and lon of user location.
 //Gets lat and lon of Sydney, if fails to get user location.
-function getCurrentLocationData(){
+async function getCurrentLocationData(){
 
     let cityLocation = {
         lat: 0,
         lon: 0
     };
 
-    //Tries to get the user location.
-    //If fails, gets lat an lon for Sydney and
-    //Stores into location storage.
-    navigator.geolocation.getCurrentPosition(success, error, options);
+    //Tries to get user location data.
+    let position = await getCurrentLongAndLat().catch(() => {});
 
-    //Ges the local storage.
-    let storage = getLocalStorage();
-    if(storage !== null){
+    //If fails, gets lat and lon for Sydney.
+    //if(position.coords.latitude === 0 && position.coords.longitude === 0){
+    if(typeof(position) === 'undefined'){
+
+        cityLocation = await getCityCoordinates(defaultCityName);
+
+    //If successfully gets user's location, gets lat and lon.
+    } else {
 
         cityLocation = {
-            lat: storage.curLocation.lat,
-            lon: storage.curLocation.lon
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
         };
     }
 
@@ -496,51 +498,13 @@ function getCurrentLocationData(){
     return cityLocation;
 }
 
-//Gets the city lat and lon.
-async function success(pos) {
-
-    let cityLocation = {
-        lat: 0,
-        lon: 0
-    };
-
-    const crd = pos.coords;
-
-    //Tries to get user location data.
-    //If fails, gets lat and lon for Sydney.
-    if(crd.latitude === 0 && crd.longitude === 0){
-
-        cityLocation = await getDefaultCityLocation();
-
-    } else {
-
-        cityLocation = {
-            lat: crd.latitude,
-            lon: crd.longitude
-        };
-       
-    }
-
-    //Ges the local storage.
-    let storage = getLocalStorage();
-
-    //If the storage if found, updates current city location.
-    //Otherwise creates a new storage with current city location and empty search city name array.
-    if(storage !== null){
-        storage.curLocation = cityLocation;
-    } else {
-        storage = {
-            curLocation: cityLocation,
-            cityNames:[]
-        };
-    }
-
-    //Updates local storage with city lat and lon.
-    addUpdateLocalStorage(storage);
+//Tries to get user location data by creating new promise.
+function getCurrentLongAndLat() {
+    return new Promise((success, error) => navigator.geolocation.getCurrentPosition(success, error));
 }
 
 //Gets lat an lon for Sydney.
-async function getDefaultCityLocation(){
+async function getCityCoordinates(citName){
 
     let cityLocation = {
         lat: 0,
@@ -548,7 +512,7 @@ async function getDefaultCityLocation(){
     };
 
     //Gets lat an lon for Sydney using API.
-    let defaultCityLocation = await getLocationDataByCityName(defaultCityName);
+    let defaultCityLocation = await getLocationDataByCityName(citName);
 
     if(typeof(defaultCityLocation) !== 'undefined'){
         cityLocation.lat =  defaultCityLocation[0].lat,
@@ -583,11 +547,6 @@ function getLocalStorage(){
     }
 
     return JSON.parse(storage);
-}
-
-//Logs the error in consol log.
-function error(err) {
-    //console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
 //Adds temporary loading text while weather data is obtained.
