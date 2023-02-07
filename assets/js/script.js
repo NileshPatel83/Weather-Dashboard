@@ -48,6 +48,9 @@ async function processSearchCityWeatherData(event){
     let cityName = cityNameTextboxEl.value;
     if(cityName.trim() === '') return;
 
+    //Makes the first letter upper case.
+    cityName = cityName.charAt(0).toUpperCase() + cityName.substring(1);
+
     //Removes existing current and future weather data.
     removeExistingWeatherData();
 
@@ -60,7 +63,7 @@ async function processSearchCityWeatherData(event){
     let cityLocation = await getCityCoordinates(cityName);
 
     if(cityLocation.lat === 0 && cityLocation.lon === 0) {
-        h2El.innerHTML = `Failed to get cordinates of current location.`;
+        h2El.innerHTML = `Failed to get cordinates of '${cityName}'.`;
         return;
     }
 
@@ -92,7 +95,6 @@ function removeExistingWeatherData(){
 }
 
 async function init(){
-
 
     //Adds temporary loading text while weather data is obtained.
     let h2El = addTemporaryLoadingText();
@@ -254,7 +256,7 @@ async function getForecastWeatherData(cityLocation){
 
     let url = `${reqForecastWeatherURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&appid=${apiKey}&units=metric`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
@@ -269,7 +271,7 @@ async function addCurrentWeatherInformation(cityLocation, h2El){
     //Gets current weather information.
     let currentWeatherData = await getCurrentWeatherData(cityLocation);
     if(typeof(currentWeatherData) === 'undefined'){
-        h2El.innerHTML= `Failed to get weather data for ${cityName}`;
+        h2El.innerHTML= `Failed to get weather data for '${cityName}'`;
         return;
     }
 
@@ -484,7 +486,7 @@ async function getCurrentWeatherData(cityLocation){
 
     let url = `${reqCurrentWeatherURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&units=metric&appid=${apiKey}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
@@ -494,9 +496,9 @@ async function getCityName(cityLocation){
 
     //Gets the city name from lat and lon using API.
     let cityData = await getCityNameFromAPI(cityLocation);
-    if(typeof(cityData) === 'undefined') return '';
+    if(cityData.length === 0) return '';
 
-    //Returns thecity name from response ontained from API.
+    //Returns the city name from response obtained from API.
     return cityData[0].name;
 }
 
@@ -506,7 +508,7 @@ async function getCityNameFromAPI(cityLocation){
     //Creates a URL to fetch city name data.
     let url = `${reqCityNameURL}lat=${cityLocation.lat}&lon=${cityLocation.lon}&limit=1&appid=${apiKey}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
@@ -558,7 +560,7 @@ async function getCityCoordinates(citName){
     //Gets lat an lon for specified city using API.
     let defaultCityLocation = await getLocationDataByCityName(citName);
 
-    if(typeof(defaultCityLocation) !== 'undefined'){
+    if(defaultCityLocation.length > 0){
         cityLocation.lat =  defaultCityLocation[0].lat,
         cityLocation.lon = defaultCityLocation[0].lon
     }
@@ -569,9 +571,9 @@ async function getCityCoordinates(citName){
 //Gets lat an lon for specified city using API.
 async function getLocationDataByCityName(cityName){
 
-    let url = `${reqCityDataURL}${cityName}&limit=5&appid=${apiKey}`;
+    let url = `${reqCityDataURL}${cityName}&limit=1&appid=${apiKey}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url).catch(() => {});
 
     return response.json();
 }
